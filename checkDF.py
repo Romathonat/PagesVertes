@@ -18,7 +18,7 @@ def check_type_implies_espece(type_implies_espece, datas, row, errors):
     espece = type_implies_espece.setdefault(datas.cell(row,2).value, datas.cell(row,4).value)
 
     if  datas.cell(row,4).value != espece:
-        errors.append('{} DF broken: different espece for same type {}: {} and {}'.format(row+1, datas.cell(row,2).value, genre, datas.cell(row,4).value))
+        errors.append('{} DF broken: different espece for same type {}: {} and {}'.format(row+1, datas.cell(row,2).value, espece, datas.cell(row,4).value))
 
 
 def chechDF():
