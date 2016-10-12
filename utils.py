@@ -1,4 +1,5 @@
 from unidecode import unidecode
+
 def is_number(s):
     try:
         float(s)
