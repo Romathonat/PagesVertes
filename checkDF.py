@@ -40,7 +40,7 @@ def checkDF(datas):
             #check_genre_implies_type(genre_implies_type, datas, row, errors)
 
             #espece_implies_genre
-            #check_espece_implies_genre(espece_implies_genre, datas, row, errors)
+            check_espece_implies_genre(espece_implies_genre, datas, row, errors)
 
             #espece <=> type en francais : it is a double DF
             check_type_implies_espece(type_implies_espece, datas, row, errors)
