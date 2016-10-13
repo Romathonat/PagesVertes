@@ -6,20 +6,21 @@ import wikipedia
 Results of query are in the form of :
 
 {
-    'found': True,
-    'description': "...",
-    'info': {   
-                'Famille': 'Aceraceae',
-                'Sous-classe': 'Rosidae',
-                'Division': 'Magnoliophyta',
-                'Genre': 'Acer',
-                'Sous-règne': 'Tracheobionta',
-                'Ordre': 'Sapindales',
-                'Règne': 'Plantae',
-                'Classe': 'Magnoliopsida'
-            },
-    'url': 'https://fr.wikipedia.org/wiki/%C3%89rable_plane'
+   'info': 
+         {'Ordre': 'Lamiales',
+          'Nom binomial': 'Fraxinus ornus',
+          'Division': 'Magnoliophyta',
+          'Règne': 'Plantae',
+          'Classe': 'Magnoliopsida',
+          'Famille': 'Oleaceae',
+          'Genre': 'Fraxinus'
+         },
+   'found': True,
+   'name': 'Fraxinus ornus',
+   'description': "Le Frêne à fleurs ou Orne (Fraxinus ornus L.,1753), parfois appelé Frêne à manne, ou Frêne orne, plus rarement Orne d'Europe, est un arbre de la famille des Oléacées.\nAutres noms communs : frêne à manne, orne à manne, frêne orne, orne d'Europe.\n\n",
+   'url': 'https://fr.wikipedia.org/wiki/Fraxinus_ornus'
 }
+
 """
 
 class WikipediaQueryEngine:
