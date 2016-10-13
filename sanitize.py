@@ -8,7 +8,7 @@ data = excel_file.sheets()[0]
 
 new_data = []
 
-#this dict contains the right espce for each type en francais
+#this dict contains the right espece for each type en francais
 correction_espece_type = {
     'frene a fleurs': 'ornus',
     'evodia de daniel': 'daniellii',
@@ -60,6 +60,12 @@ correction_espece_type = {
     'caryer blanc':'ovata'
 }
 
+#this dict contains the right genre-espece for each type en francais
+correction_genre_espece = {
+    'sequoia toujours vert': ('sequoia', 'sempervirens'),
+    'douglas': ('picea', 'douglasii')
+}
+
 for row in range(data.nrows):
     new_line = [normalize(data.cell(row,i).value) for i in range(data.ncols)]
 
@@ -67,6 +73,13 @@ for row in range(data.nrows):
     for type_francais, espece in correction_espece_type.items():
         if new_line[2] == type_francais:
             new_line[4] = espece
+
+    for type_francais, espece_genre in correction_genre_espece.items():
+        if new_line[2] == type_francais:
+            new_line[3] = espece_genre[0]
+            new_line[4] = espece_genre[1]
+
+
 
     new_data.append(new_line)
 
