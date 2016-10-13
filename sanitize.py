@@ -60,9 +60,7 @@ correction_espece_type = {
     'caryer blanc':'ovata'
 }
 
-
-
-for row in range(datas.nrows):
+for row in range(data.nrows):
     new_line = [normalize(data.cell(row,i).value) for i in range(data.ncols)]
 
     #we have a mistake here, so we need to check the espece for each type we have
@@ -72,7 +70,7 @@ for row in range(datas.nrows):
 
     new_data.append(new_line)
 
-#print(new_datas)
+#print(new_data)
 errors = checkDF(new_data)
 
 for line in errors:
