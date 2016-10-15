@@ -30,8 +30,8 @@ def checkDF(data):
     for row in range(len(data)):
         #we don't consider incomplete lines
         if data[row][4] != 'sp.':
-            #check_genre_espece_implies_type_feuillage(genre_espece_implies_type_feuillage, data, row, errors)
+            check_genre_espece_implies_type_feuillage(genre_espece_implies_type_feuillage, data, row, errors)
 
-            check_type_implies_genre_espece(type_implies_genre_espece, data, row, errors)
+            #check_type_implies_genre_espece(type_implies_genre_espece, data, row, errors)
 
     return errors
