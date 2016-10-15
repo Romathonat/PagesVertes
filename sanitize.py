@@ -66,6 +66,12 @@ correction_genre_espece = {
     'douglas': ('picea', 'douglasii')
 }
 
+correction_type_arbre = {
+    ('taxus', 'baccata'): 'conifere',
+    ('taxodium', 'distichum'): 'conifere',
+    ('ginkgo', 'biloba'): 'feuillu'
+}
+
 for row in range(data.nrows):
     new_line = [normalize(data.cell(row,i).value) for i in range(data.ncols)]
 
@@ -79,6 +85,9 @@ for row in range(data.nrows):
             new_line[3] = espece_genre[0]
             new_line[4] = espece_genre[1]
 
+    for espece_genre, type_arbre in correction_type_arbre.items():
+        if (new_line[3], new_line[4]) == espece_genre:
+            new_line[5] = type_arbre
 
 
     new_data.append(new_line)
