@@ -33,9 +33,12 @@ class WikipediaQueryEngine:
         # Wikipedia API often gives strange results ("Erable indéterminé" ~> "Violon")
         words = name_french.split()
         name = ""
+
+        undefined_species = False        
+
         for word in words:
             if(utils.normalize(word) == 'indetermine'):
-                pass
+                undefined_species = True
             else:
                 name += word+' '
         name = name.strip()
@@ -72,7 +75,17 @@ class WikipediaQueryEngine:
         except:
             page_not_found = True
 
-        if(page_not_species or page_not_found):
+        if(page_not_species and undefined_species):
+            # data corresponds to undefined species (ex: "Pommier indéterminé")
+            # we want to return a page corresponding to the gender if it exists
+            if "Genre" in results["info_french"]:
+                results["suggested_name_french"] = name
+                results["genus"] = results["info_french"]
+                results["species"] = "Indéterminé"
+                results["page_title"] = page.title
+                results["url"] = url
+                results["description"] = page.summary
+        elif(page_not_species or page_not_found):
             # then the page we found referes most likely to a genus and not a species.
             # thus we have to try to find a species' page using provided genus and species to infer the french name of the species
             infered_binominal_name = genus+' '+species
@@ -98,11 +111,10 @@ class WikipediaQueryEngine:
             except:
                 # could not find anything using binominal name as query
                 return {}
-
         else:
             # we found a species, yay !
             results["suggested_name_french"] = name_french # this name seems OK since we found a matching species
-            if "Genre" in results["info_french"]:
+            if "Nom binominal" in results["info_french"]:
                 results["genus"] = results["info_french"]["Genre"]
                 binominal_name_words = results["info_french"]["Nom binominal"].split()
                 normalized_genus = utils.normalize(results["genus"])
@@ -145,6 +157,9 @@ class WikipediaQueryEngine:
                 if(center_taxobox_title == 'Nom binominal' or center_taxobox_title == 'Hybride'):
                     binominal = center_taxobox.select('span[lang=\"la\"]')[0].get_text().replace("×", "× ")#binominal
                     info["Nom binominal"] = binominal
+                elif(center_taxobox_title == 'Genre'):
+                     info["Genre"] = center_taxobox.select('span[lang=\"la\"]')[0].get_text()
+
             subtitle_spans = soup.select('span#sous_titre_h1')
             if subtitle_spans is not None:
                 subtitle = ""
@@ -158,6 +173,10 @@ class WikipediaQueryEngine:
             results["info_french"] = {}
 
 '''
+w = WikipediaQueryEngine()
+r = w.correct_and_enrich_species("Pommier indéterminé", "MALUS", "saccharinum")
+print(r)
+print('\n')
 w = WikipediaQueryEngine()
 r = w.correct_and_enrich_species("Epicéa de Koster", "PICEA", "pungens")
 print(r)
