@@ -2,7 +2,7 @@ from sanitize import sanitize
 import json
 
 
-sanitized_datas = sanitize()
+sanitized_datas = sanitize(True)
 
 #those are the tables of our model
 #python dict are hashable, very good to gain perfs

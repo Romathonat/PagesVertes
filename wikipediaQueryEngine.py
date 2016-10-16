@@ -28,8 +28,8 @@ class WikipediaQueryEngine:
         }
         Use suggested_name_french, genus, species to override given name_french, genus, species in data
         """
-        
-        # This step is important : when names such as "Erable indéterminé" come up,
+
+        # This step is important : when names such as "Erable indéterminé" comes up,
         # Wikipedia API often gives strange results ("Erable indéterminé" ~> "Violon")
         words = name_french.split()
         name = ""
@@ -58,7 +58,7 @@ class WikipediaQueryEngine:
             results["page_title"] = page.title
             results["url"] = url
             results["description"] = page.summary
-            
+
             # see if url matches already scraped elements
             if(url in self.name_by_url):
                 if(self.name_by_url[url] in self.results_by_name):
@@ -98,7 +98,7 @@ class WikipediaQueryEngine:
             except:
                 # could not find anything using binominal name as query
                 return {}
-                
+
         else:
             # we found a species, yay !
             results["suggested_name_french"] = name_french # this name seems OK since we found a matching species
@@ -119,7 +119,7 @@ class WikipediaQueryEngine:
             else:
                 results["genus"] = genus
                 results["species"] = species
-        
+
         # save scraped element in memory
         self.results_by_name[name] = results
         self.name_by_url[url] = name
