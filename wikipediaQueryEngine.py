@@ -159,7 +159,7 @@ class WikipediaQueryEngine:
 
 '''
 w = WikipediaQueryEngine()
-r = w.correct_and_enrich_species("Epicéa de Koster", "PICEA", "pungens")
+r = w.correct_and_enrich_species("Noisetier à fruits ronds", "CORYLUS", "vellana")
 print(r)
 print('\n')
 w = WikipediaQueryEngine()
@@ -186,4 +186,6 @@ print('\n')
 r = w.correct_and_enrich_species("Platane commun", "blabla", "zopzop")
 print(r)
 print('\n')
+
+r = w.correct_and_enrich_species("Févier d'Amérique sans épines", "CORYLUS", "saccharinum")
 '''

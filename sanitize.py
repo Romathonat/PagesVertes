@@ -74,11 +74,23 @@ def sanitize(useWikipedia):
     correction_type_arbre = {
         ('taxus', 'baccata'): 'conifere',
         ('taxodium', 'distichum'): 'conifere',
-        ('ginkgo', 'biloba'): 'feuillu'
+        ('ginkgo', 'biloba'): 'feuillu',
+        ('pyrus', 'glutinosa'): 'feuillu',
+        ('quercus', 'trojana'): 'feuillu'
     }
 
     for row in range(data.nrows):
         new_line = [normalize(data.cell(row,i).value) for i in range(data.ncols)]
+
+        #we correct datas with wikipedia
+        if useWikipedia and row > 0:
+            print(data.cell(row,2).value)
+            r = w.correct_and_enrich_species(data.cell(row,2).value, new_line[3], new_line[4])
+            print(r)
+            if r and r['suggested_name_french'] != '' and r['genus'] != '' and r['species'] != '':
+                new_line[2] = normalize(r['suggested_name_french'])
+                new_line[3] = normalize(r['genus'])
+                new_line[4] = normalize(r['species'])
 
         #we have a mistake here, so we need to check the espece for each type we have
         for type_francais, espece in correction_espece_type.items():
@@ -94,15 +106,7 @@ def sanitize(useWikipedia):
             if (new_line[3], new_line[4]) == espece_genre:
                 new_line[5] = type_arbre
 
-        #we correct datas with wikipedia
-        if useWikipedia and row > 0:
-            print(data.cell(row,2).value)
-            r = w.correct_and_enrich_species(data.cell(row,2).value, new_line[3], new_line[4])
-            print(r)
-            if r and r['suggested_name_french'] != '' and r['genus'] != '' and r['species'] != '':
-                new_line[2] = r['suggested_name_french']
-                new_line[4] = r['genus']
-                new_line[3] = r['species']
+
 
         #we don't pay attention to the first line
         if row > 0:
