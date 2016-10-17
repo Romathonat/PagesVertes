@@ -10,6 +10,7 @@ def sanitize(useWikipedia):
     excel_file = xlrd.open_workbook('./data/arbres.xls')
     data = excel_file.sheets()[0]
     new_data = []
+    icomplete_data = []
 
     if(useWikipedia):
         w = WikipediaQueryEngine()
@@ -82,49 +83,50 @@ def sanitize(useWikipedia):
     for row in range(data.nrows):
         new_line = [normalize(data.cell(row,i).value) for i in range(data.ncols)]
 
+        if new_line[4] != 'sp.':
+            #we correct datas with wikipedia, if requested
+            if useWikipedia and row > 0:
+                print(data.cell(row,2).value)
+                r = w.correct_and_enrich_species(data.cell(row,2).value, new_line[3], new_line[4])
+                print(r)
 
+                #we expand the size of the line to add  info_french, url and description
+                new_line.extend(["" for i in range(4)])
 
-        #we correct datas with wikipedia
-        if useWikipedia and row > 0:
-            print(data.cell(row,2).value)
-            r = w.correct_and_enrich_species(data.cell(row,2).value, new_line[3], new_line[4])
-            print(r)
+                if r and r['suggested_name_french'] != '' and r['genus'] != '' and r['species'] != '':
+                    new_line[3] = normalize(r['genus'])
+                    new_line[4] = normalize(r['species'])
 
-            #we expand the size of the line to add  info_french, url and description
-            new_line.extend(["" for i in range(4)])
-
-            if r and r['suggested_name_french'] != '' and r['genus'] != '' and r['species'] != '':
-                new_line[3] = normalize(r['genus'])
-                new_line[4] = normalize(r['species'])
-
-                #this line is a nested informations
-                new_line[9] = r['info_french']
-                new_line[10] = normalize(r['url'])
-                new_line[11] = normalize(r['description'])
-                new_line[12] = normalize(r['suggested_name_french'])
-
-        #we have a mistake here, so we need to check the espece for each type we have
-        for type_francais, espece in correction_espece_type.items():
-            if new_line[2] == type_francais:
-                new_line[4] = espece
-
-        for type_francais, espece_genre in correction_genre_espece.items():
-            if new_line[2] == type_francais:
-                new_line[3] = espece_genre[0]
-                new_line[4] = espece_genre[1]
-
-        for espece_genre, type_arbre in correction_type_arbre.items():
-            if (new_line[3], new_line[4]) == espece_genre:
-                new_line[5] = type_arbre
+                    #this line is a nested informations
+                    new_line[9] = r['info_french']
+                    new_line[10] = normalize(r['url'])
+                    new_line[11] = normalize(r['description'])
+                    new_line[12] = normalize(r['suggested_name_french'])
 
 
 
-        #we don't pay attention to the first line
-        if row > 0:
-            new_data.append(new_line)
+            #we have a mistake here, so we need to check the espece for each type we have
+            for type_francais, espece in correction_espece_type.items():
+                if new_line[2] == type_francais:
+                    new_line[4] = espece
 
+            for type_francais, espece_genre in correction_genre_espece.items():
+                if new_line[2] == type_francais:
+                    new_line[3] = espece_genre[0]
+                    new_line[4] = espece_genre[1]
 
+            for espece_genre, type_arbre in correction_type_arbre.items():
+                if (new_line[3], new_line[4]) == espece_genre:
+                    new_line[5] = type_arbre
 
+            #we don't pay attention to the first line
+            if row > 0:
+                if new_line[2] != '' and new_line[3] != '' and new_line[4] != '':
+                    new_data.append(new_line)
+                else:
+                    incomplete_data.append(new_line)
+        else:
+            incomplete_data.append(new_line)
 
     #print(new_data)
     errors = checkDF(new_data)
@@ -132,6 +134,4 @@ def sanitize(useWikipedia):
     for line in errors:
         print(line)
 
-
-
-    return new_data
+    return (new_data, incomplete_data)

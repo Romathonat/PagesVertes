@@ -203,7 +203,7 @@ print('\n')
 r = w.correct_and_enrich_species("Erable", "blabla", "zopzop")
 print(r)
 print('\n')
-r = w.correct_and_enrich_species("Platane commun", "blabla", "zopzop")
+r = w.correct_and_enrich_species("Platane à feuilles d'érable", "PLATANUS", "x acerifolia")
 print(r)
 print('\n')
 
