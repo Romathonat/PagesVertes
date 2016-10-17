@@ -34,7 +34,7 @@ class WikipediaQueryEngine:
         words = name_french.split()
         name = ""
 
-        undefined_species = False        
+        undefined_species = False
 
         for word in words:
             if(utils.normalize(word) == 'indetermine'):
