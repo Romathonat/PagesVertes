@@ -33,8 +33,10 @@ for line in sanitized_datas:
         new_feuillage = {'typeArbre': line[5]}
         feuillage.setdefault(line[5], new_feuillage)
 
-        new_nomBinomial = {'genre': line[3] ,'espece': line[4], 'nomFrancais':line[2], 'feuillage': line[5],
-        'info_francais': line[9], 'url': line[10], 'description': line[11]}
+        genre = line[3][0].upper()+line[3][1:]
+
+        new_nomBinomial = {'genre': genre,'espece': line[4], 'nomFrancais':line[2], 'feuillage': line[5],
+        'info_francais': line[9], 'url': line[10], 'description': line[11], 'nom_francais_suggere': line[12]}
         #we add this data only if it not here yet
         nomBinomial.setdefault(line[3]+" "+line[4], new_nomBinomial)
 
