@@ -1,11 +1,13 @@
 import xlrd
+import os
 
-excel_file = xlrd.open_workbook('./data/arbres.xls')
+excel_file = xlrd.open_workbook(os.path.join(os.path.dirname(__file__), '../data/arbres.xls'))
+
 data = excel_file.sheets()[0]
 
 gps = {}
 
-with open('./data/arbresGPS.txt', 'r+') as f:
+with open(os.path.join(os.path.dirname(__file__),'../data/arbresGPS.txt'), 'r+') as f:
     for line in f:
         line = line.replace(' ', '')
         id_arbre, latitude, longitude = line.split(',')

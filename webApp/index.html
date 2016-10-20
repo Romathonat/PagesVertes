@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Pages vertes</title>
+</head>
+<body>
+
+    <p>Les pages vertes</p>
+
+</body>
+<script type="text/javascript">
+
+function loadJSON(callback, file) {
+    var xobj = new XMLHttpRequest();
+    xobj.overrideMimeType("application/json");
+    xobj.open('GET', '../data/json/'+file, true); // Replace 'my_data' with the path to your file
+    xobj.onreadystatechange = function () {
+        if (xobj.readyState == 4 && xobj.status == "200") {
+            // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+            callback(xobj.responseText);
+        }
+    };
+    xobj.send(null);
+}
+
+var arbre;
+var feuillage;
+var nomBinomial;
+
+//we get our json files
+loadJSON(function(response) {
+  // Parse JSON string into object
+    var arbre = JSON.parse(response);
+}, 'arbre.json');
+
+loadJSON(function(response) {
+    var arbre = JSON.parse(response);
+}, 'nomBinomial.json');
+
+loadJSON(function(response) {
+    var arbre = JSON.parse(response);
+}, 'feuillage.json');
+
+console.log(arbre);
+
+</script>
+</html>

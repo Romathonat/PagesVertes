@@ -2,12 +2,13 @@ import xlrd
 from utils import normalize
 from checkDF import checkDF
 from wikipediaQueryEngine import WikipediaQueryEngine
+import os
 
 def sanitize(useWikipedia):
     """useWikipedia is a boolean telling if we want to add a step to enrich and
     correct data with wikipedia"""
 
-    excel_file = xlrd.open_workbook('./data/arbres.xls')
+    excel_file = xlrd.open_workbook(os.path.join(os.path.dirname(__file__),'../data/arbres.xls'))
     data = excel_file.sheets()[0]
     new_data = []
     incomplete_data = []

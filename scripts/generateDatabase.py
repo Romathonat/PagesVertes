@@ -12,7 +12,7 @@ feuillage = {}
 
 #we load the gps into the memory
 gps = {}
-with open('./data/arbresGPS.txt', 'r+') as f:
+with open(os.path.join(os.path.dirname(__file__),'../data/arbresGPS.txt'), 'r+') as f:
     for line in f:
         line = line.replace(' ', '')
         id_arbre, latitude, longitude = line.split(',')
@@ -46,11 +46,11 @@ for line in sanitized_datas:
 
 
 #now we dump datas into json files
-with open('./data/json/feuillage.json', 'w') as f:
+with open(os.path.join(os.path.dirname(__file__), '../data/json/feuillage.json'), 'w') as f:
     json.dump(feuillage, f)
 
-with open('./data/json/nomBinomial.json', 'w') as f:
+with open(os.path.join(os.path.dirname(__file__),'../data/json/nomBinomial.json'), 'w') as f:
     json.dump(nomBinomial, f)
 
-with open('./data/json/arbre.json', 'w') as f:
+with open(os.path.join(os.path.dirname(__file__),'../data/json/arbre.json'), 'w') as f:
     json.dump(arbre, f)
