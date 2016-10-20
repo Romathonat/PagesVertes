@@ -1,8 +1,8 @@
 from sanitize import sanitize
 import json
+import os
 
-
-sanitized_datas, incomplete_data = sanitize(True)
+sanitized_datas, incomplete_data = sanitize(False)
 
 #those are the tables of our model
 #python dict are hashable, very good to gain perfs
@@ -33,6 +33,7 @@ for line in sanitized_datas:
         new_feuillage = {'typeArbre': line[5]}
         feuillage.setdefault(line[5], new_feuillage)
 
+        #the firt letter must be upper
         genre = line[3][0].upper()+line[3][1:]
 
         new_nomBinomial = {'genre': genre,'espece': line[4], 'nomFrancais':line[2], 'feuillage': line[5],
@@ -47,10 +48,16 @@ for line in sanitized_datas:
 
 #now we dump datas into json files
 with open(os.path.join(os.path.dirname(__file__), '../data/json/feuillage.json'), 'w') as f:
-    json.dump(feuillage, f)
+    feuillage_json = json.dumps(feuillage)
+    feuillage_string = 'feuillage = {};'.format(feuillage_json)
+    f.write(feuillage_string)
 
 with open(os.path.join(os.path.dirname(__file__),'../data/json/nomBinomial.json'), 'w') as f:
-    json.dump(nomBinomial, f)
+    nomBinomial_json = json.dumps(nomBinomial)
+    nomBinomial_string = 'nomBinomial = {};'.format(nomBinomial_json)
+    f.write(nomBinomial_string)
 
 with open(os.path.join(os.path.dirname(__file__),'../data/json/arbre.json'), 'w') as f:
-    json.dump(arbre, f)
+    arbre_json = json.dumps(arbre)
+    arbre_string = 'arbre = {};'.format(arbre_json)
+    f.write(arbre_string)

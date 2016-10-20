@@ -1,1 +1,1 @@
-{"feuillu": {"typeArbre": "feuillu"}, "conifere": {"typeArbre": "conifere"}}
+feuillage = {"feuillu": {"typeArbre": "feuillu"}, "conifere": {"typeArbre": "conifere"}};

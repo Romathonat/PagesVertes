@@ -83,7 +83,9 @@ def sanitize(useWikipedia):
 
     for row in range(data.nrows):
         new_line = [normalize(data.cell(row,i).value) for i in range(data.ncols)]
-
+        #we expand the size of the line to add  info_french, url and description
+        new_line.extend(["" for i in range(4)])
+        
         if new_line[4] != 'sp.':
             #we correct datas with wikipedia, if requested
             if useWikipedia and row > 0:
@@ -91,8 +93,7 @@ def sanitize(useWikipedia):
                 r = w.correct_and_enrich_species(data.cell(row,2).value, new_line[3], new_line[4])
                 print(r)
 
-                #we expand the size of the line to add  info_french, url and description
-                new_line.extend(["" for i in range(4)])
+
 
                 if r and r['suggested_name_french'] != '' and r['genus'] != '' and r['species'] != '':
                     #if we have a blank for the type_francais
