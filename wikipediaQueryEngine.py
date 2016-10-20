@@ -207,5 +207,5 @@ r = w.correct_and_enrich_species("Platane à feuilles d'érable", "PLATANUS", "x
 print(r)
 print('\n')
 
-r = w.correct_and_enrich_species("Févier d'Amérique sans épines", "CORYLUS", "saccharinum")
+r = w.correct_and_enrich_species("Erable plane", "acer", "platanoides")
 '''

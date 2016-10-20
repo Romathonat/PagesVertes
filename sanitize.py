@@ -10,7 +10,7 @@ def sanitize(useWikipedia):
     excel_file = xlrd.open_workbook('./data/arbres.xls')
     data = excel_file.sheets()[0]
     new_data = []
-    icomplete_data = []
+    incomplete_data = []
 
     if(useWikipedia):
         w = WikipediaQueryEngine()
@@ -86,7 +86,7 @@ def sanitize(useWikipedia):
         if new_line[4] != 'sp.':
             #we correct datas with wikipedia, if requested
             if useWikipedia and row > 0:
-                print(data.cell(row,2).value)
+                print('{} {} {}'.format(data.cell(row,2).value, new_line[3], new_line[4]))
                 r = w.correct_and_enrich_species(data.cell(row,2).value, new_line[3], new_line[4])
                 print(r)
 
@@ -94,6 +94,10 @@ def sanitize(useWikipedia):
                 new_line.extend(["" for i in range(4)])
 
                 if r and r['suggested_name_french'] != '' and r['genus'] != '' and r['species'] != '':
+                    #if we have a blank for the type_francais
+                    if new_line[2] == '':
+                        new_line[2] = r['suggested_name_french']
+
                     new_line[3] = normalize(r['genus'])
                     new_line[4] = normalize(r['species'])
 
