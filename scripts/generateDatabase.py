@@ -2,7 +2,7 @@ from sanitize import sanitize
 import json
 import os
 
-sanitized_datas, incomplete_data = sanitize(False)
+sanitized_datas, incomplete_data = sanitize(True)
 
 #those are the tables of our model
 #python dict are hashable, very good to gain perfs
@@ -39,10 +39,10 @@ for line in sanitized_datas:
         new_nomBinomial = {'genre': genre,'espece': line[4], 'nomFrancais':line[2], 'feuillage': line[5],
         'info_francais': line[9], 'url': line[10], 'description': line[11], 'nom_francais_suggere': line[12]}
         #we add this data only if it not here yet
-        nomBinomial.setdefault(line[3]+" "+line[4], new_nomBinomial)
+        nomBinomial.setdefault(genre+" "+line[4], new_nomBinomial)
 
         new_arbre = {'id': line[1],'hauteur': line[6], 'diametreTronc': line[7], 'diametreCouronne': line[8],\
-        'latitude' : tree_latitude, 'longitude': tree_longitude, 'nomBinomial': line[3]+" "+line[4]}
+        'latitude' : tree_latitude, 'longitude': tree_longitude, 'nomBinomial': genre+" "+line[4]}
         arbre[line[1]] = new_arbre
 
 
