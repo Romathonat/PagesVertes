@@ -3,39 +3,70 @@ from urllib.request import urlopen
 import wikipedia
 import utils
 import sys
+import json
 
 class WikipediaQueryEngine:
     '''
     This query and scraping class is only relevant for the html structure of wikipedia
     pages around 2016.
     '''
+    scraped_pages_by_url = {}
+    results_by_tuple = {}
 
     def __init__(self):
         wikipedia.set_lang("fr")
-        self.results_by_name = {}
-        self.name_by_url = {}
 
-    def correct_and_enrich_species(self, name_french, genus, species):
+    def build_binominal_name_for_query(self, genus, species):
+        infered_binominal_name = genus+' '+species
+        infered_binominal_name = infered_binominal_name.replace(' x ', ' ×')
+        return infered_binominal_name
+
+    def build_species_name_from_binominal_name(self, binominal_name, genus):
+        binominal_name_words = binominal_name.split()
+        normalized_genus = utils.normalize(genus)
+        species_words = []
+        for binominal in binominal_name_words:
+            normalized_binominal = utils.normalize(binominal)
+            if normalized_binominal != normalized_genus:
+                species_words.append(normalized_binominal)
+        species = ""
+        for word in species_words:
+             species += word.lower() + ' '
+        return species.strip()
+
+    def enrich_data(self, name_french, genus, species):        
         """
         Returns a dictionary in the form of:
         {
-            "page_title" : "..."
-            "page_subtitle" : "..."
-            "suggested_name_french" : "..."
             "genus" : "..."
             "species" : "..."
-            "info_french" : { ... }
+            "genus_page" : {
+                                "url" : "..."
+                                "page_title" : "..."
+                                "page_subtitle" : "..."
+                                "description" : "..."
+                           }
+            "species_page" : {
+                                "url" : "..."
+                                "page_title" : "..."
+                                "page_subtitle" : "..."
+                                "description" : "..."
+                             }
+            "info_french" : {
+                                ...
+                            }   
         }
-        Use suggested_name_french, genus, species to override given name_french, genus, species in data
-        """
+        """    
 
-        # This step is important : when names such as "Erable indéterminé" comes up,
-        # Wikipedia API often gives strange results ("Erable indéterminé" ~> "Violon")
-        words = name_french.split()
-        name = ""
+        if (name_french, genus, species) in WikipediaQueryEngine.results_by_tuple:
+            return WikipediaQueryEngine.results_by_tuple[(name_french, genus, species)]
 
         undefined_species = False
 
+        # This step is important : when names such as "Erable indéterminé" come up,
+        # Wikipedia API often gives strange results ("Erable indéterminé" ~> "Violon")
+        words = name_french.split()
+        name = ""
         for word in words:
             if(utils.normalize(word) == 'indetermine'):
                 undefined_species = True
@@ -43,103 +74,131 @@ class WikipediaQueryEngine:
                 name += word+' '
         name = name.strip()
 
+        result = {}
+
+        if(undefined_species):
+            # We just have to find a genus page
+            queries_for_genus = set()
+            queries_for_genus.add(name)
+            queries_for_genus.add(name.split()[0])
+            queries_for_genus.add(genus)
+                        
+            for query_for_genus in queries_for_genus:
+                genus_page = self.find_genus_page_for(query_for_genus)
+                if genus_page:
+                    result["genus_page"] = genus_page.copy()
+                    result["genus"] = genus_page["info_french"]["Genre"]
+                    break
+        else:
+            # We have to find a species page
+            species_page = self.find_species_page_for(name)
+            if not species_page :
+                species_page = self.find_species_page_for(self.build_binominal_name_for_query(genus, species))
+            if species_page:
+                result["species_page"] = species_page.copy()
+                result["species"] = self.build_species_name_from_binominal_name(species_page["info_french"]["Nom binominal"], species_page["info_french"]["Genre"])
+            # And also the corresponding genus page
+            genus_page = self.find_genus_page_for(name)
+            queries_for_genus = set()
+            if species_page:
+                queries_for_genus.add(species_page["info_french"]["Genre"])
+            if name.strip():
+                queries_for_genus.add(name.split()[0])
+            queries_for_genus.add(genus)
+            for query_for_genus in queries_for_genus:
+                genus_page = self.find_genus_page_for(query_for_genus)
+                if genus_page:
+                    result["genus_page"] = genus_page.copy()
+                    result["genus"] = genus_page["info_french"]["Genre"]
+                    break
+
+        genus_page_info = {}
+        if "genus_page" in result:
+            genus_page_info = result["genus_page"]["info_french"].copy()
+            del result["genus_page"]["info_french"] 
+
+        species_page_info = {}
+        if "species_page" in result:
+            species_page_info = result["species_page"]["info_french"].copy()
+            del result["species_page"]["info_french"]
+
+        genus_page_info.update(species_page_info)
+
+        if genus_page_info:
+            result["info_french"] = genus_page_info
+
+        WikipediaQueryEngine.results_by_tuple[(name_french, genus, species)] = result.copy()
+
+        return result
+
+    def find_genus_page_for(self, query):
+        return self.find_page_for(query, species=False)
+
+    def find_species_page_for(self, query):
+        return self.find_page_for(query, species=True)
+
+    def find_page_for(self, query, species=True):
+        """
+        Returns a dictionary in the form of:
+        {
+            "url" : "..."
+            "page_title" : "..."
+            "page_subtitle" : "..."
+            "description" : "..."
+            "info_french" : "..."
+        }
+        """
         results = {}
 
-        # try to find query in already scraped elements
-        if(name in self.results_by_name):
-            return self.results_by_name[name]
-
         # query wikipedia API
-
-        page_not_species = False
-        page_not_found = False
-
         try:
-            page = wikipedia.page(name)
+            page = wikipedia.page(wikipedia.search(query)[0])
             url = page.url
 
-            results["page_title"] = page.title
-            results["url"] = url
-            results["description"] = page.summary
-
-            # see if url matches already scraped elements
-            if(url in self.name_by_url):
-                if(self.name_by_url[url] in self.results_by_name):
-                    return self.results_by_name[self.name_by_url[url]]
+            page_results = {}
 
             # scrape given url
-            self.scrape_page(url, results)
-            if("Nom binominal" not in results["info_french"]):
-                page_not_species = True
+            if url in WikipediaQueryEngine.scraped_pages_by_url:
+                page_results = WikipediaQueryEngine.scraped_pages_by_url[url]
+            else:                            
+                page_results = self.scrape_page(url)
+                WikipediaQueryEngine.scraped_pages_by_url[url] = page_results
 
+            if "Règne" not in page_results["info_french"] or utils.normalize(page_results["info_french"]["Règne"]) != "plantae":
+                raise Exception
+
+            if species:
+                # Check if page is species
+                if("Nom binominal" not in page_results["info_french"]):
+                    # Page is not a species
+                    raise Exception
+                else:
+                    results["info_french"] = page_results["info_french"].copy()
+                    results["url"] = page.url
+                    results["page_title"] = page.title
+                    if("page_subtitle" in page_results):
+                        results["page_subtitle"] = page_results["page_subtitle"]
+                    results["description"] = page.summary
+            else :
+                # Check if page is genus
+                if("Genre" not in page_results["info_french"] or "Nom binominal" in page_results["info_french"]):
+                    # Not a genus
+                    raise Exception
+                else:
+                    results["info_french"] = page_results["info_french"].copy()
+                    results["url"] = page.url
+                    results["page_title"] = page.title
+                    if("page_subtitle" in page_results):
+                        results["page_subtitle"] = page_results["page_subtitle"]
+                    results["description"] = page.summary
         except:
-            page_not_found = True
-
-        if(page_not_species and undefined_species):
-            # data corresponds to undefined species (ex: "Pommier indéterminé")
-            # we want to return a page corresponding to the gender if it exists
-            if "Genre" in results["info_french"]:
-                results["suggested_name_french"] = name
-                results["genus"] = results["info_french"]
-                results["species"] = "Indéterminé"
-                results["page_title"] = page.title
-                results["url"] = url
-                results["description"] = page.summary
-        elif(page_not_species or page_not_found):
-            # then the page we found referes most likely to a genus and not a species.
-            # thus we have to try to find a species' page using provided genus and species to infer the french name of the species
-            infered_binominal_name = genus+' '+species
-            # if we query for a hybrid (binominal such as Aesculus ×carnea), we have to delete space between the x and the species names to its right
-            # for wikipedia api to find it
-            infered_binominal_name = infered_binominal_name.replace(' x ', ' ×')
-
-            try:
-                page2 = wikipedia.page(infered_binominal_name)
-                url = page2.url
-                 # see if url matches already scraped elements
-                if(url in self.name_by_url):
-                    return self.results_by_name[self.name_by_url[url]]
-                self.scrape_page(url, results)
-                results["genus"] = genus
-                results["species"] = species
-                results["page_title"] = page2.title
-                results["url"] = url
-                results["description"] = page2.summary
-                results["suggested_name_french"] = results["page_title"]
-                if("page_subtitle" in results and results["page_subtitle"].strip()):
-                    results["suggested_name_french"] += " / "+results["page_subtitle"]
-            except:
-                # could not find anything using binominal name as query
-                return {}
-
-        else:
-            # we found a species, yay !
-            results["suggested_name_french"] = name_french # this name seems OK since we found a matching species
-            if "Nom binominal" in results["info_french"]:
-                results["genus"] = results["info_french"]["Genre"]
-                binominal_name_words = results["info_french"]["Nom binominal"].split()
-                normalized_genus = utils.normalize(results["genus"])
-                species_words = []
-                for binominal in binominal_name_words:
-                    normalized_binominal = utils.normalize(binominal)
-                    if normalized_binominal != normalized_genus:
-                        species_words.append(normalized_binominal)
-                species = ""
-                for word in species_words:
-                     species += word.lower() + ' '
-                species = species.strip()
-                results["species"] = species
-            else:
-                results["genus"] = genus
-                results["species"] = species
-
-        # save scraped element in memory
-        self.results_by_name[name] = results
-        self.name_by_url[url] = name
+            results = {}
 
         return results
 
-    def scrape_page(self, url, results):
+    def scrape_page(self, url):
+
+        results = {}
 
         raw = urlopen(url)
         soup = bs(raw, "html.parser")
@@ -168,44 +227,63 @@ class WikipediaQueryEngine:
                     subtitle = subtitle_spans[0].text
                 for i in range(len(subtitle_spans)-1):
                     subtitle += ' / '+subtitle_spans[i+1].text
-                results["page_subtitle"] = subtitle
+                if(subtitle.strip()):
+                    results["page_subtitle"] = subtitle
             results["info_french"] = info
         except:
             results["info_french"] = {}
 
+        return results
+
 '''
 w = WikipediaQueryEngine()
-r = w.correct_and_enrich_species("Pommier indéterminé", "MALUS", "saccharinum")
-print(r)
-print('\n')
-w = WikipediaQueryEngine()
-r = w.correct_and_enrich_species("Epicéa de Koster", "PICEA", "pungens")
-print(r)
-print('\n')
-w = WikipediaQueryEngine()
-r = w.correct_and_enrich_species("Marronnier rouge", "Aesculus", "x carnea")
-print(r)
-print('\n')
-w = WikipediaQueryEngine()
-r = w.correct_and_enrich_species("Chêne chevelu", "lol", "lil")
-print(r)
-print('\n')
-w = WikipediaQueryEngine()
-r = w.correct_and_enrich_species("Platane à feuilles d'érable", "lol", "lil")
-print(r)
-print('\n')
-r = w.correct_and_enrich_species("Savonnier", "KOELREUTERIA", "paniculata")
-print(r)
-print('\n')
-r = w.correct_and_enrich_species("Buis", "Buxus", "Sempervirens")
-print(r)
-print('\n')
-r = w.correct_and_enrich_species("Erable", "blabla", "zopzop")
-print(r)
-print('\n')
-r = w.correct_and_enrich_species("Platane à feuilles d'érable", "PLATANUS", "x acerifolia")
-print(r)
-print('\n')
 
-r = w.correct_and_enrich_species("Erable plane", "acer", "platanoides")
+r = w.enrich_data("Erable plane", "ACER", "platanoides")
+print(json.dumps(r, indent=4, sort_keys=True))
+print('\n')
+r = w.enrich_data("Erable indéterminé", "ACER", "sp.")
+print(json.dumps(r, indent=4, sort_keys=True))
+print('\n')
+r = w.enrich_data("Erable indéterminé", "ACER", "sp.")
+print(json.dumps(r, indent=4, sort_keys=True))
+print('\n')
+r = w.enrich_data("", "", "")
+print(json.dumps(r, indent=4, sort_keys=True))
+print('\n')
+r = w.enrich_data("héhé", "Harry potter", "saccharinum")
+print(json.dumps(r, indent=4, sort_keys=True))
+print('\n')
+r = w.enrich_data("Anus", "Casserole", "saccharinum")
+print(json.dumps(r, indent=4, sort_keys=True))
+print('\n')
+r = w.enrich_data("Pommier indéterminé", "MALUS", "saccharinum")
+print(json.dumps(r, indent=4, sort_keys=True))
+print('\n')
+r = w.enrich_data("Epicéa de Koster", "PICEA", "pungens")
+print(json.dumps(r, indent=4, sort_keys=True))
+print('\n')
+r = w.enrich_data("Marronnier rouge", "Aesculus", "x carnea")
+print(json.dumps(r, indent=4, sort_keys=True))
+print('\n')
+r = w.enrich_data("Chêne chevelu", "lol", "lil")
+print(json.dumps(r, indent=4, sort_keys=True))
+print('\n')
+r = w.enrich_data("Platane à feuilles d'érable", "lol", "lil")
+print(json.dumps(r, indent=4, sort_keys=True))
+print('\n')
+r = w.enrich_data("Savonnier", "KOELREUTERIA", "paniculata")
+print(json.dumps(r, indent=4, sort_keys=True))
+print('\n')
+r = w.enrich_data("Buis", "Buxus", "Sempervirens")
+print(json.dumps(r, indent=4, sort_keys=True))
+print('\n')
+r = w.enrich_data("Erable indetermIné", "blabla", "zopzop")
+print(json.dumps(r, indent=4, sort_keys=True))
+print('\n')
+r = w.enrich_data("Platane à feuilles d'érable", "PLATANUS", "x acerifolia")
+print(json.dumps(r, indent=4, sort_keys=True))
+print('\n')
+r = w.enrich_data("Erable plane", "acer", "platanoides")
+print(json.dumps(r, indent=4, sort_keys=True))
+print('\n')
 '''
