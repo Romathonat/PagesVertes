@@ -1,7 +1,7 @@
 from sanitize import sanitize
 import json
 import os
-from utils import hashableDict, set_to_json
+from utils import hashableDict
 
 sanitized_datas, incomplete_data = sanitize(False)
 
@@ -51,16 +51,16 @@ for line in sanitized_datas:
 #now we dump datas into json files
 with open(os.path.join(os.path.dirname(__file__), '../data/json/feuillage.json'), 'w') as f:
     #we get the representation of
-    feuillage_json = set_to_json(feuillage)[1:-1]
-    feuillage_string = 'feuillage = [{}];'.format(feuillage_json)
+    feuillage_json = repr(feuillage)[1:-1]
+    feuillage_string = 'var feuillage = [{}];'.format(feuillage_json)
     f.write(feuillage_string)
 
 with open(os.path.join(os.path.dirname(__file__),'../data/json/nomBinomial.json'), 'w') as f:
-    nomBinomial_json = set_to_json(nomBinomial)[1:-1]
-    nomBinomial_string = 'nomBinomial = [{}];'.format(nomBinomial_json)
+    nomBinomial_json = repr(nomBinomial)[1:-1]
+    nomBinomial_string = 'var nomBinomial = [{}];'.format(nomBinomial_json)
     f.write(nomBinomial_string)
 
 with open(os.path.join(os.path.dirname(__file__),'../data/json/arbre.json'), 'w') as f:
-    arbre_json = set_to_json(arbre)[1:-1]
-    arbre_string = 'arbre = [{}];'.format(arbre_json)
+    arbre_json = repr(arbre)[1:-1]
+    arbre_string = 'var arbre = [{}];'.format(arbre_json)
     f.write(arbre_string)

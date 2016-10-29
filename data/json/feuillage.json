@@ -1,1 +1,1 @@
-feuillage = [{"typeArbre": "feuillu"}, {"typeArbre": "conifere"}];
+var feuillage = [{'typeArbre': 'conifere'}, {'typeArbre': 'feuillu'}];
