@@ -1,1 +1,1 @@
-feuillage = {"feuillu": {"typeArbre": "feuillu"}, "conifere": {"typeArbre": "conifere"}};
+feuillage = [{"typeArbre": "feuillu"}, {"typeArbre": "conifere"}];
