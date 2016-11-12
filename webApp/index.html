@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Pages vertes</title>
     <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
 </head>
 <body>
 
@@ -12,8 +13,10 @@
     <input type="text" id="id_arbre"/>
     <button onclick="searchID()">Trouver</button>
     <div id="info_arbre"><div>
+    <div id="mapid"></div>
 </body>
 
+<script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
 <script type="text/javascript" src="../data/json/arbre.json"></script>
 <script type="text/javascript" src="../data/json/nomBinomial.json"></script>
 <script type="text/javascript" src="../data/json/feuillage.json"></script>
@@ -21,7 +24,7 @@
 <script type="text/javascript">
 
 function searchID() {
-    id_arbre = document.getElementById("id_arbre").value;
+    id_arbre = document.getElementById("id_arbre").value.toLowerCase();
 
     current_arbre = arbre[id_arbre];
 
@@ -33,6 +36,7 @@ function searchID() {
     }
 
     document.getElementById("info_arbre").appendChild(document.createElement('pre')).innerHTML = syntaxHighlight(JSON.stringify(current_arbre, null, 2));
+    var marker = L.marker([current_arbre['latitude'], current_arbre['longitude']]).addTo(mymap);
 }
 
 function syntaxHighlight(json) {
@@ -54,6 +58,18 @@ function syntaxHighlight(json) {
     });
 }
 
+//now we create the map
+var mymap = L.map('mapid', {
+    center: [45.7807286829, 4.85788730701],
+    zoom: 15
+    });
+
+L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+    maxZoom: 18,
+    id: 'romathonat.23e4b6a0',
+    accessToken: 'pk.eyJ1Ijoicm9tYXRob25hdCIsImEiOiJjaXZmM2J4M2cwMDM2Mnpxa253cHVkdHA0In0.FU0Ju6sGpWmlm74TEphPbA'
+}).addTo(mymap);
 
 </script>
 </html>

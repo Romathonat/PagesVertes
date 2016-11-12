@@ -3,7 +3,7 @@ import json
 import os
 from utils import hashableDict
 
-sanitized_datas, incomplete_data = sanitize(True)
+sanitized_datas, incomplete_data = sanitize(False)
 
 #those are the tables of our model
 #python dict are hashable, very good to gain perfs
