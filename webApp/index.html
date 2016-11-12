@@ -35,8 +35,9 @@ function searchID() {
         current_arbre["nomBinomial"] = current_nomBinomial;
     }
 
-    document.getElementById("info_arbre").appendChild(document.createElement('pre')).innerHTML = syntaxHighlight(JSON.stringify(current_arbre, null, 2));
+    //document.getElementById("info_arbre").appendChild(document.createElement('pre')).innerHTML = syntaxHighlight(JSON.stringify(current_arbre, null, 2));
     var marker = L.marker([current_arbre['latitude'], current_arbre['longitude']]).addTo(mymap);
+    marker.bindPopup(syntaxHighlight(JSON.stringify(current_arbre, null, 2))).openPopup();
 }
 
 function syntaxHighlight(json) {
