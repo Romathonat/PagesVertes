@@ -90,25 +90,21 @@ def sanitize(useWikipedia):
             #we correct datas with wikipedia, if requested
             if useWikipedia and row > 0:
                 print('{} {} {}'.format(data.cell(row,2).value, new_line[3], new_line[4]))
-                r = w.correct_and_enrich_species(data.cell(row,2).value, new_line[3], new_line[4])
-                print(r)
+                r = w.enrich_data(data.cell(row,2).value, new_line[3], new_line[4])
 
-                if r and r['suggested_name_french'] != '' and r['genus'] != '' and r['species'] != '':
+                if r and r['genus'] != '' and r['species'] != '':
                     #if we have a blank for the type_francais
-                    if new_line[2] == '':
-                        new_line[2] = r['suggested_name_french']
 
                     new_line[3] = normalize(r['genus'])
                     new_line[4] = normalize(r['species'])
 
                     #this line is a nested informations
                     new_line[9] = r['info_french']
-                    new_line[10] = normalize(r['url'])
-                    new_line[11] = normalize(r['description'])
-                    new_line[12] = normalize(r['suggested_name_french'])
+                    new_line[10] = r['genus_page']
+                    new_line[11] = r['species_page']
 
 
-            #we have a mistake here, so we need to check the espece for each type we have
+            #we could have mistake here, so we need to check the espece for each type we have
             for type_francais, espece in correction_espece_type.items():
                 if new_line[2] == type_francais:
                     new_line[4] = espece
