@@ -3,6 +3,8 @@ import json
 import os
 from utils import hashableDict
 
+PATH_JSON = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),'webApp', 'json')
+
 sanitized_datas, incomplete_data = sanitize(False)
 
 #those are the tables of our model
@@ -49,18 +51,15 @@ for line in sanitized_datas:
 
 
 #now we dump datas into json files
-with open(os.path.join(os.path.dirname(__file__), '../data/json/feuillage.json'), 'w') as f:
+with open(os.path.join(PATH_JSON,'feuillage.json'), 'w') as f:
     #we get the representation of
-    feuillage_json = repr(feuillage)[1:-1]
-    feuillage_string = 'var feuillage = [{}];'.format(feuillage_json)
-    f.write(feuillage_string)
+    feuillage_json = list(feuillage)
+    f.write(json.dumps(feuillage_json))
 
-with open(os.path.join(os.path.dirname(__file__),'../data/json/nomBinomial.json'), 'w') as f:
-    nomBinomial_json = repr(nomBinomial)[1:-1]
-    nomBinomial_string = 'var nomBinomial = [{}];'.format(nomBinomial_json)
-    f.write(nomBinomial_string)
+with open(os.path.join(PATH_JSON,'nomBinomial.json'), 'w') as f:
+    nomBinomial_json = list(nomBinomial)
+    f.write(json.dumps(nomBinomial_json))
 
-with open(os.path.join(os.path.dirname(__file__),'../data/json/arbre.json'), 'w') as f:
-    arbre_json = repr(arbre)[1:-1]
-    arbre_string = 'var arbre = [{}];'.format(arbre_json)
-    f.write(arbre_string)
+with open(os.path.join(PATH_JSON,'arbre.json'), 'w') as f:
+    arbre_json = list(arbre)
+    f.write(json.dumps(arbre_json))

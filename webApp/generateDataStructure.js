@@ -1,4 +1,37 @@
-//this file will use the json file to generate a specific data structure to make the join with good performances
+//this file will use the json files to generate a specific data structure to make the join with good performances
+
+var arbre;
+var feuillage;
+var nomBinomial;
+
+
+$.ajax({
+    url: 'json/arbre.json',
+    async: false,
+    dataType: 'json',
+    success: function (json) {
+        arbre = json;
+    }
+});
+
+$.ajax({
+    url: 'json/feuillage.json',
+    async: false,
+    dataType: 'json',
+    success: function (json) {
+        feuillage = json;
+    }
+});
+
+$.ajax({
+    url: 'json/nomBinomial.json',
+    async: false,
+    dataType: 'json',
+    success: function (json) {
+        nomBinomial = json;
+    }
+});
+
 
 var arbreTampon = {};
 
