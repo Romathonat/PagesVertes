@@ -183,4 +183,40 @@ def test():
     file_writer(directory_result_path,file_sql_name,content)
 
 
-test()
+def create_script_SQL(directory_json_path):
+# create a script SQL to generate tables from json. 
+# directory_json_path parameter is the path to the directory that contains the json we want to create tables from.
+# the script will be writen in directory data/sql/.
+
+    content = template_header_file_sql()
+    content += "\n\n\n"
+
+    for file_json in glob.glob(os.path.join(directory_json_path, '*.json')):
+        #all json files are array that contains objects
+        data = open_json(file_json)
+
+        values = []
+
+        for dico in data:
+            fields = {}
+            values_item = []
+
+            for key in dico.keys():
+                if isinstance(dico[key],int):
+                    fields[key] = ("int(11)",True)
+                elif isinstance(dico[key],float):
+                    fields[key] = ("double",True)
+                else:
+                    fields[key] = ("varchar(255)",True)
+
+                values_item.append(dico[key])
+
+            values.append(values_item)
+
+        file_name = str(os.path.splitext(ntpath.basename(file_json))[0])
+        content += "\n\n" + template_table_sql(file_name,fields,values)
+
+
+    file_sql_name = "script_sql.sql"
+    directory_result_path = "../data/sql/"
+    file_writer(directory_result_path,file_sql_name,content)
