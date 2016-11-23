@@ -11,7 +11,7 @@ def template_header_file_sql():
     header += "\n-- Creation : "+ str(today_date)
     header += "\n-- Database : Arbres du Grand Lyon, la ville Lumiere"
     header += "\n\n"
-    header += "\n--------------------------------------------------------------------------------------------------------------------------------------------------------------------\n------------------------------------------------------------------TABLES--------------------------------------------------------------------------------------------\n--------------------------------------------------------------------------------------------------------------------------------------------------------------------"
+    header += "\n-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------\n-- ----------------------------------------------------------------TABLES--------------------------------------------------------------------------------------------\n-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------"
     return header
 
 def template_table_sql(table_name,table_fields,table_values):
@@ -21,7 +21,7 @@ def template_table_sql(table_name,table_fields,table_values):
     table += template_create_table_sql(table_name,table_fields)
     table += "\n\n"
     table += template_insert_values_table_sql(table_name,table_fields,table_values)
-    table += "\n\n--------------------------------------------------------------------------------------------------------------------------\n--------------------------------------------------------------------------------------------------------------------------"
+    table += "\n\n-- ------------------------------------------------------------------------------------------------------------------------\n-- ------------------------------------------------------------------------------------------------------------------------"
 
     return table
 
@@ -30,17 +30,18 @@ def template_create_table_sql(table_name,table_fields):
     
     table = "\n-- Structure"
     table += "\n\n"
-    table += "CREATE TABLE '"+ str(table_name) + "'("
+    table += "CREATE TABLE `"+ str(table_name) + "`("
     table += "\n"
-    #the first field is an artificial field for index in database 
-    table += "  '"+"pk_"+str(table_name)+"' int(11) NOT NULL"
+    #the first field is an artificial field for index in database
+    nom_index = "pk_"+str(table_name)
+    table += "  `"+nom_index+"` int(11) NOT NULL"
 
     for key in table_fields.keys():
         table += ",\n"
 
         field_type,can_field_be_null = table_fields[key]
 
-        table += "  '"+str(key)+"' "+str(field_type)
+        table += "  `"+str(key)+"` "+str(field_type)
 
         if can_field_be_null == False:
             table += " NOT NULL"
@@ -48,9 +49,17 @@ def template_create_table_sql(table_name,table_fields):
 
     table += "\n);"
 
+
     table += "\n\n"
-    table += "ALTER TABLE '"+str(table_name)+"'"
-    table += "\n  MODIFY '"+"pk_"+str(table_name)+"' int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;"
+    table += "-- index for table"
+    table += "\nALTER TABLE `"+str(table_name)+"`"
+    table += "\n  ADD PRIMARY KEY (`"+nom_index+"`);"
+
+
+    table += "\n\n"
+    table += "-- Auto increment for index"
+    table += "\nALTER TABLE `"+str(table_name)+"`"
+    table += "\n  MODIFY `"+"pk_"+str(table_name)+"` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;"
 
     return table
 
@@ -61,33 +70,35 @@ def template_insert_values_table_sql(table_name,table_fields,table_values):
 
     table = "\n-- Content for table "+str(table_name)
     table += "\n\n"
-    table += "INSERT INTO '" + table_name + "' ("
+    table += "INSERT INTO `" + table_name + "` ("
 
-    is_first_field = True #variable use in order to know if we add a ',' after the field name
+    is_first_field = True #variable use in order to know if we add a `,` after the field name
     for key in table_fields.keys():
 
         if is_first_field == False:
             table += " , "
 
-        table += "'" + str(key) + "'"
+        table += "`" + str(key) + "`"
 
         is_first_field = False
 
     table += ") VALUES \n"
 
-    is_first_values = True #variable use in order to know if we add a ',' after the values tuple
+    is_first_values = True #variable use in order to know if we add a `,` after the values tuple
     for values in table_values:
         if is_first_values == False:
             table += " , "
         table += "("
 
-        is_first_value = True #variable use in order to know if we add a ',' after the value
+        is_first_value = True #variable use in order to know if we add a `,` after the value
         for value in values:
             if is_first_value == False:
                 table += " , "
-            table += str(value)
+            
+            table += "\""+str(value).replace("\"","'")+"\""
+            
             if value == "":
-                table += "''"
+                table += ""
             is_first_value = False
 
         table += ")"
@@ -152,11 +163,11 @@ def test():
 
             for key in dico.keys():
                 if isinstance(dico[key],int):
-                    fields[key] = ("int(11)",False)
+                    fields[key] = ("int(11)",True)
                 elif isinstance(dico[key],float):
-                    fields[key] = ("double",False)
+                    fields[key] = ("double",True)
                 else:
-                    fields[key] = ("varchar(255)",False)
+                    fields[key] = ("varchar(255)",True)
 
                 values_item.append(dico[key])
 
