@@ -94,8 +94,8 @@ def template_insert_values_table_sql(table_name,table_fields,table_values):
         for value in values:
             if is_first_value == False:
                 table += " , "
-            
-            table += "\""+str(value).replace("\"","'")+"\""
+
+            table += "'"+str(value).replace("'","\\'")+"'"
             
             if value == "":
                 table += ""
