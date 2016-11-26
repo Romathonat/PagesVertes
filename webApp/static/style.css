@@ -8,3 +8,11 @@ pre {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
     height: 500px;
     margin-top: 20px;
 }
+
+.genderName {
+    color: green;
+}
+
+.speciesName {
+    color: RoyalBlue;
+}
