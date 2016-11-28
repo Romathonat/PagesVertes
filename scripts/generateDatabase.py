@@ -3,7 +3,7 @@ import json
 import os
 from utils import hashableDict
 
-PATH_JSON = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),'webApp', 'json')
+PATH_JSON = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'webApp', 'json')
 
 sanitized_datas, incomplete_data = sanitize(False)
 

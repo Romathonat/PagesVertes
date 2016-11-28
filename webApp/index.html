@@ -17,15 +17,15 @@
     <script type="text/javascript" src="./static/dependencies/semantic-ui/semantic.min.js"></script>
     <script type="text/javascript" src="./static/dependencies/semantic-ui/components/dropdown.min.js"></script>
     <script type="text/javascript" src="./static/generateDataStructure.js"></script>
+    <script type="text/javascript" src="./static/map.js"></script>
     <script type="text/javascript" src="./static/index.js"></script>
 
 </head>
 
-
 <body>
     <p>Les pages vertes</p>
     <div class="ui left icon input">
-        <input id="id_arbre" placeholder="Identifiant arbre" type="text">
+        <input id="idTree" placeholder="Identifiant arbre" type="text">
         <i class="search icon"></i>
     </div>
     <button class="ui primary button" onclick="searchID()">Trouver</button>
@@ -34,15 +34,12 @@
         <input name="binomialName" type="hidden">
         <i class="dropdown icon"></i>
         <div class="default text">Nom commun espèce</div>
-        <div id="binomialName-menu" class="menu">
-        </div>
+        <div id="binomialName-menu" class="menu"></div>
     </div>
 
-    <div id="info_arbre"></div>
-    <div id="mapid"></div>
+    <div id="treeInfo"></div>
+    <div id="mapId"></div>
 </body>
-
-
 
 <template id="mapTemplate">
     <h4> {{ id }} </h4>
