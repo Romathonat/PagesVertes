@@ -23,33 +23,40 @@
 </head>
 
 <body>
-    <p>Les pages vertes</p>
-    <div class="ui horizontal segments">
-        <div class="ui segment">
-            <div class="ui action input">
-                <input id="idTree" placeholder="Identifiant arbre" type="text">
-                <button class="ui primary button" onclick="searchID()">Localiser</button>
-            </div>
-        </div>
-        <div class="ui segment">
-            <div id="binominalDropdown" class="ui fluid search selection dropdown">
-                <input name="binominalName" type="hidden">
-                <i class="dropdown icon"></i>
-                <div class="default text">Nom commun espèce</div>
-                <div id="binominalName-menu" class="menu"></div>
-            </div>
+    <div class="ui fixed menu">
+        <div class="ui container">
+            <img class="logo" src="static/images/pagesvertes.png">
+            <h1>Les pages vertes</h1>
         </div>
     </div>
 
-    <div class="ui horizontal segments">
-        <div class="ui segment">
-            <div id="mapId"></div>
-        </div>
-        <div class="ui segment">
-            <div id="treeInfo"></div>
+    <div class="mainContent">
+        <div class="ui horizontal segments">
+            <div class="ui segment">
+                <div class="ui two column grid">
+                    <div class="ui four wide column">
+                        <div class="ui action input">
+                            <input id="idTree" placeholder="Identifiant arbre" type="text">
+                            <button class="ui primary button" onclick="searchID()">Localiser</button>
+                        </div>
+                    </div>
+                    <div class="ui one wide column"></div>
+                    <div class="ui four wide column">
+                        <div id="binominalDropdown" class="ui fluid search selection dropdown">
+                            <input name="binominalName" type="hidden">
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Nom commun espèce</div>
+                            <div id="binominalName-menu" class="menu"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="mapId"></div>
+            </div>
+            <div class="ui segment">
+                <div id="treeInfo"></div>
+            </div>
         </div>
     </div>
-
 </body>
 
 <template id="mapTemplate">
@@ -65,5 +72,6 @@
     {{/name}}
 </template>
 
-
+<footer>
+<div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div></footer>
 </html>

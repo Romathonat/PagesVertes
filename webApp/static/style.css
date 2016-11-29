@@ -16,3 +16,7 @@ pre {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
 .speciesName {
     color: RoyalBlue;
 }
+
+.mainContent {
+    margin-top: 66px;
+}
