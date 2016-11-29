@@ -10,7 +10,7 @@ sanitized_datas, incomplete_data = sanitize(False)
 #those are the tables of our model
 #python dict are hashable, very good to gain perfs
 arbre = set()
-nomBinomial = set()
+nomBinominal = set()
 feuillage = set()
 
 #we load the gps into the memory
@@ -39,14 +39,14 @@ for line in sanitized_datas:
         #the firt letter must be upper
         genre = line[3][0].upper()+line[3][1:]
 
-        new_nomBinomial = {'genre': genre,'espece': line[4], 'nomFrancais':line[2], 'feuillage': line[5],
+        new_nomBinominal = {'genre': genre,'espece': line[4], 'nomFrancais':line[2], 'feuillage': line[5],
         'info_francais': line[9], 'url': line[10], 'description': line[11], 'nom_francais_suggere': line[12]}
 
         #we add this data only if it is not here yet
-        nomBinomial.add(hashableDict(new_nomBinomial))
+        nomBinominal.add(hashableDict(new_nomBinominal))
 
         new_arbre = {'id': line[1],'hauteur': line[6], 'diametreTronc': line[7], 'diametreCouronne': line[8],\
-        'latitude' : tree_latitude, 'longitude': tree_longitude, 'nomBinomial': genre+" "+line[4]}
+        'latitude' : tree_latitude, 'longitude': tree_longitude, 'nomBinominal': genre+" "+line[4]}
         arbre.add(hashableDict(new_arbre))
 
 
@@ -56,9 +56,9 @@ with open(os.path.join(PATH_JSON,'feuillage.json'), 'w') as f:
     feuillage_json = list(feuillage)
     f.write(json.dumps(feuillage_json))
 
-with open(os.path.join(PATH_JSON,'nomBinomial.json'), 'w') as f:
-    nomBinomial_json = list(nomBinomial)
-    f.write(json.dumps(nomBinomial_json))
+with open(os.path.join(PATH_JSON,'nomBinominal.json'), 'w') as f:
+    nomBinominal_json = list(nomBinominal)
+    f.write(json.dumps(nomBinominal_json))
 
 with open(os.path.join(PATH_JSON,'arbre.json'), 'w') as f:
     arbre_json = list(arbre)

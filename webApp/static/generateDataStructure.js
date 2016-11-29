@@ -2,7 +2,7 @@
 
 var arbre;
 var feuillage;
-var nomBinomial;
+var nomBinominal;
 
 
 $.ajax({
@@ -24,11 +24,11 @@ $.ajax({
 });
 
 $.ajax({
-    url: 'json/nomBinomial.json',
+    url: 'json/nomBinominal.json',
     async: false,
     dataType: 'json',
     success: function (json) {
-        nomBinomial = json;
+        nomBinominal = json;
     }
 });
 
@@ -41,14 +41,14 @@ for(var i=0; i<arbre.length; i++){
 
 arbre = arbreTampon;
 
-var nomBinomialTampon = {};
+var nomBinominalTampon = {};
 
-for(var i=0; i<nomBinomial.length; i++){
-    var genreEspece = nomBinomial[i].genre+" "+nomBinomial[i].espece;
-    nomBinomialTampon[genreEspece] = nomBinomial[i];
+for(var i=0; i<nomBinominal.length; i++){
+    var genreEspece = nomBinominal[i].genre+" "+nomBinominal[i].espece;
+    nomBinominalTampon[genreEspece] = nomBinominal[i];
 }
 
-nomBinomial = nomBinomialTampon;
+nomBinominal = nomBinominalTampon;
 
 var feuillageTampon = {};
 

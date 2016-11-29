@@ -32,11 +32,11 @@
             </div>
         </div>
         <div class="ui segment">
-            <div id="binomialDropdown" class="ui fluid search selection dropdown">
-                <input name="binomialName" type="hidden">
+            <div id="binominalDropdown" class="ui fluid search selection dropdown">
+                <input name="binominalName" type="hidden">
                 <i class="dropdown icon"></i>
                 <div class="default text">Nom commun espèce</div>
-                <div id="binomialName-menu" class="menu"></div>
+                <div id="binominalName-menu" class="menu"></div>
             </div>
         </div>
     </div>
@@ -49,17 +49,17 @@
             <div id="treeInfo"></div>
         </div>
     </div>
-    
+
 </body>
 
 <template id="mapTemplate">
     <h4> {{ id }} </h4>
-    <div class="genderName">{{ nomBinomial.genre }}</div>
-    <div class="speciesName">{{ nomBinomial.espece }}</div>
-    <div>{{ nomBinomial.nomFrancais }}</div>
+    <div class="genderName">{{ nomBinominal.genre }}</div>
+    <div class="speciesName">{{ nomBinominal.espece }}</div>
+    <div>{{ nomBinominal.nomFrancais }}</div>
 </template>
 
-<template id="binomialNameTemplate">
+<template id="binominalNameTemplate">
     {{#name}}
         <div class="item" data-value="{{ . }}"> {{.}} </div>
     {{/name}}
