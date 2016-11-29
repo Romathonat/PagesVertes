@@ -31,11 +31,6 @@ $( document ).ready(function() {
     });
 
     let binomialtemplate = $('#binomialNameTemplate').html();
-
-    jQuery.each(nomBinomial, function(i, val) {
-        let template = $('#mapTemplate').html();
-        var rendered = Mustache.render(binomialtemplate, {name: i});
-        $( "#binomialName-menu" ).append(rendered);
-    });
-
+    var rendered = Mustache.render(binomialtemplate, {name: Object.keys(nomBinomial)});
+    $("#binomialName-menu").append(rendered);
 });

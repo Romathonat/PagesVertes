@@ -24,21 +24,32 @@
 
 <body>
     <p>Les pages vertes</p>
-    <div class="ui left icon input">
-        <input id="idTree" placeholder="Identifiant arbre" type="text">
-        <i class="search icon"></i>
+    <div class="ui horizontal segments">
+        <div class="ui segment">
+            <div class="ui action input">
+                <input id="idTree" placeholder="Identifiant arbre" type="text">
+                <button class="ui primary button" onclick="searchID()">Localiser</button>
+            </div>
+        </div>
+        <div class="ui segment">
+            <div id="binomialDropdown" class="ui fluid search selection dropdown">
+                <input name="binomialName" type="hidden">
+                <i class="dropdown icon"></i>
+                <div class="default text">Nom commun espèce</div>
+                <div id="binomialName-menu" class="menu"></div>
+            </div>
+        </div>
     </div>
-    <button class="ui primary button" onclick="searchID()">Trouver</button>
 
-    <div id="binomialDropdown" class="ui fluid search selection dropdown">
-        <input name="binomialName" type="hidden">
-        <i class="dropdown icon"></i>
-        <div class="default text">Nom commun espèce</div>
-        <div id="binomialName-menu" class="menu"></div>
+    <div class="ui horizontal segments">
+        <div class="ui segment">
+            <div id="mapId"></div>
+        </div>
+        <div class="ui segment">
+            <div id="treeInfo"></div>
+        </div>
     </div>
-
-    <div id="treeInfo"></div>
-    <div id="mapId"></div>
+    
 </body>
 
 <template id="mapTemplate">
@@ -49,7 +60,9 @@
 </template>
 
 <template id="binomialNameTemplate">
-    <div class="item" data-value="{{ name }}"> {{ name }} </div>
+    {{#name}}
+        <div class="item" data-value="{{ . }}"> {{.}} </div>
+    {{/name}}
 </template>
 
 

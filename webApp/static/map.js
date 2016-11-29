@@ -22,6 +22,9 @@ function setMarker(currentTree){
 }
 
 function clearMap(){
+    jQuery.each(markers, function(i, val) {
+        searchMap.removeLayer(val)
+    });
     markers=[]
 }
 

@@ -7,8 +7,8 @@ pre {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
 #mapId {
     height: 500px;
     margin-top: 20px;
+    z-index: 1;
 }
-
 .genderName {
     color: green;
 }
