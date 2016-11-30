@@ -25,3 +25,6 @@ pre {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
     height: 100%;
     overflow: scroll;
 }
+#searchOverlay{
+    height: 600px;
+}
