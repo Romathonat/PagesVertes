@@ -42,7 +42,7 @@ function searchBinominalName(binName){
         },
         function(){
             $(this).css("background-color", "transparent");
-            //searchMap.unhighlightMarker(arbre[$(this).attr('id')]);
+            searchMap.unhighlightMarker(arbre[$(this).attr('id')]);
     });
 }
 
