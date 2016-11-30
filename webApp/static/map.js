@@ -1,4 +1,5 @@
 var treeMapTemplate
+var markers
 var searchMap;
 var greenIcon = L.icon({
     iconUrl: './static/images/leaf-green.png',
@@ -9,7 +10,6 @@ var greenIcon = L.icon({
     shadowAnchor: [4, 62], // the same for the shadow
     popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
 });
-var markers = []
 
 
 function setMarker(currentTree){
@@ -17,24 +17,24 @@ function setMarker(currentTree){
         icon: greenIcon
     }).addTo(searchMap);
     var renderedTemplate = Mustache.render(treeMapTemplate, currentTree);
-    marker.bindPopup(renderedTemplate).openPopup();
-    markers.push(marker)
+    markers.addLayer(marker)
 }
 
 function clearMap(){
-    jQuery.each(markers, function(i, val) {
-        searchMap.removeLayer(val)
-    });
-    markers=[]
+    markers.clearLayers()
 }
 
 $( document ).ready(function() {
-    treeMapTemplate = $('#mapTemplate').html();
+    treeMapTemplate = $('#mapMarkerTemplate').html();
 
     searchMap = L.map('mapId', {
         center: [45.7807286829, 4.85788730701],
-        zoom: 15
+        zoom: 15,
+        maxZoom: 25
     });
+
+    markers = L.markerClusterGroup();
+    searchMap.addLayer(markers)
 
     L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',

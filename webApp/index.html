@@ -5,14 +5,18 @@
     <meta charset="UTF-8">
     <title>Pages vertes</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
-    <link rel="stylesheet" type="text/css" href="./static/style.css">
+    <link rel="stylesheet" type="text/css" href="./static/dependencies/leaflet.markercluster/MarkerCluster.css">
+    <link rel="stylesheet" type="text/css" href="./static/dependencies/leaflet.markercluster/MarkerCluster.Default.css">
 
     <link rel="stylesheet" type="text/css" href="./static/dependencies/semantic-ui/semantic.min.css">
     <link rel="stylesheet" type="text/css" href="./static/dependencies/semantic-ui/components/dropdown.min.css">
     <link rel="stylesheet" type="text/css" href="./static/dependencies/semantic-ui/components/button.min.css">
 
+    <link rel="stylesheet" type="text/css" href="./static/style.css">
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
+    <script type="text/javascript" src="./static/dependencies/leaflet.markercluster/leaflet.markercluster.js"></script>
     <script type="text/javascript" src="./static/dependencies/mustache/mustache.min.js"></script>
     <script type="text/javascript" src="./static/dependencies/semantic-ui/semantic.min.js"></script>
     <script type="text/javascript" src="./static/dependencies/semantic-ui/components/dropdown.min.js"></script>
@@ -34,7 +38,7 @@
         <div class="ui horizontal segments">
             <div class="ui segment">
                 <div class="ui two column grid">
-                    <div class="ui four wide column">
+                    <div class="ui six wide column">
                         <div class="ui action input">
                             <input id="idTree" placeholder="Identifiant arbre" type="text">
                             <button class="ui primary button" onclick="searchID()">Localiser</button>
@@ -53,17 +57,35 @@
                 <div id="mapId"></div>
             </div>
             <div class="ui segment">
-                <div id="treeInfo"></div>
+                <div id="treeList" class="ui relaxed divided list">
+                </div>
             </div>
         </div>
     </div>
 </body>
 
-<template id="mapTemplate">
+<footer>
+    <div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+</footer>
+
+<template id="mapMarkerTemplate">
     <h4> {{ id }} </h4>
     <div class="genderName">{{ nomBinominal.genre }}</div>
     <div class="speciesName">{{ nomBinominal.espece }}</div>
     <div>{{ nomBinominal.nomFrancais }}</div>
+</template>
+
+<template id="treeListTemplate">
+    {{#trees}}
+    <div class="item">
+        <div class="content">
+            <h4> {{ id }} </h4>
+            <div class="genderName">{{ nomBinominal.genre }}</div>
+            <div class="speciesName">{{ nomBinominal.espece }}</div>
+            <div>{{ nomBinominal.nomFrancais }}</div>
+        </div>
+    </div>
+    {{/trees}}
 </template>
 
 <template id="binominalNameTemplate">
@@ -72,6 +94,4 @@
     {{/name}}
 </template>
 
-<footer>
-<div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div></footer>
 </html>
