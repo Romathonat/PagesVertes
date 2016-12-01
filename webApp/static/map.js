@@ -44,6 +44,10 @@ class SearchMap {
         this.markersIndex[currentTree.id] = marker;
     }
 
+    setViewToMarker(tree) {
+        this.searchMap.setView(new L.LatLng(tree.latitude, tree.longitude), 16);
+    }
+
     highlightMarker(tree){
         let renderedTemplate = Mustache.render(this.treeMapTemplate, tree);
         let marker = this.markersIndex[tree.id];

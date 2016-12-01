@@ -27,40 +27,42 @@
 </head>
 
 <body>
-    <div class="ui fixed menu">
+    <div id="mainMenu" class="ui borderless fixed menu">
         <div class="ui container">
-            <img class="logo" src="static/images/pagesvertes.png">
-            <h1>Les pages vertes</h1>
+            <div id="logo" class="item">
+                <img class="logo" src="static/images/leaf.svg">
+                <h1>Les pages vertes</h1>
+            </div>
+            <div class="right borderless menu">
+                <div class="item">
+                    <div class="ui action input">
+                        <input id="idTree" placeholder="Identifiant arbre" type="text">
+                        <button class="ui primary button" onclick="searchID()">Localiser</button>
+                    </div>
+                </div>
+                <div class="item">
+                    <div id="binominalDropdown" class="ui fluid search selection dropdown">
+                        <input name="binominalName" type="hidden">
+                        <i class="dropdown icon"></i>
+                        <div class="default text">Nom commun espèce</div>
+                        <div id="binominalName-menu" class="menu"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
+
     <div class="mainContent">
-        <div id="searchOverlay" class="ui horizontal segments">
-            <div class="ui segment">
-                <div class="ui two column grid">
-                    <div class="ui six wide column">
-                        <div class="ui action input">
-                            <input id="idTree" placeholder="Identifiant arbre" type="text">
-                            <button class="ui primary button" onclick="searchID()">Localiser</button>
-                        </div>
-                    </div>
-                    <div class="ui one wide column"></div>
-                    <div class="ui four wide column">
-                        <div id="binominalDropdown" class="ui fluid search selection dropdown">
-                            <input name="binominalName" type="hidden">
-                            <i class="dropdown icon"></i>
-                            <div class="default text">Nom commun espèce</div>
-                            <div id="binominalName-menu" class="menu"></div>
-                        </div>
-                    </div>
-                </div>
+        <div id="searchOverlay" class="ui   horizontal segments">
+            <div id="mapSegment" class="ui segment">
                 <div id="mapId"></div>
             </div>
-            <div class="ui segment">
-                <div id="treeList" class="ui relaxed divided list">
-                </div>
+            <div id="treeListSegment" class="ui segment">
+                <div id="treeList" class="ui relaxed divided list"></div>
             </div>
         </div>
+        <div id="treeDetails"></div>
     </div>
 </body>
 
@@ -69,6 +71,13 @@
 </footer>
 
 <template id="mapMarkerTemplate">
+    <h4> {{ id }} </h4>
+    <div class="genderName">{{ nomBinominal.genre }}</div>
+    <div class="speciesName">{{ nomBinominal.espece }}</div>
+    <div>{{ nomBinominal.nomFrancais }}</div>
+</template>
+
+<template id="treeDetailsTemplate">
     <h4> {{ id }} </h4>
     <div class="genderName">{{ nomBinominal.genre }}</div>
     <div class="speciesName">{{ nomBinominal.espece }}</div>

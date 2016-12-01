@@ -1,5 +1,6 @@
 var treeListTemplate;
 var binominaltemplate;
+var treeDetailsTemplate;
 var searchMap;
 
 //This function join the json to reconstuct one tree data
@@ -37,18 +38,23 @@ function searchBinominalName(binName){
 
     $(".resultListItem").hover(
         function(){
-            $(this).css("background-color", "blue");
+            $(this).css("background-color", "#89C4F4");
             searchMap.highlightMarker(arbre[$(this).attr('id')]);
         },
         function(){
             $(this).css("background-color", "transparent");
             searchMap.unhighlightMarker(arbre[$(this).attr('id')]);
     });
+
+    $( ".resultListItem" ).dblclick(function() {
+        searchMap.setViewToMarker(arbre[$(this).attr('id')]);
+    });
 }
 
 $( document ).ready(function() {
     treeListTemplate = $('#treeListTemplate').html();
     binominaltemplate = $('#binominalNameTemplate').html();
+    treeDetailsTemplate = $('#treeDetailsTemplate').html();
 
     searchMap = new SearchMap("mapId");
 
