@@ -23,6 +23,12 @@ function searchID() {
     searchMap.setMarker(tree);
 }
 
+function updateTreeDetails(tree) {
+    var rendered = Mustache.render(treeDetailsTemplate, tree);
+    $("#treeDetails").empty();
+    $("#treeDetails").append(rendered);
+}
+
 function searchBinominalName(binName){
     searchMap.clearMap();
     let temp = [];
@@ -36,6 +42,8 @@ function searchBinominalName(binName){
     $("#treeList").empty();
     $("#treeList").append(rendered);
 
+    searchMap.resetView();
+
     $(".resultListItem").hover(
         function(){
             $(this).css("background-color", "#89C4F4");
@@ -47,11 +55,9 @@ function searchBinominalName(binName){
     });
 
     $( ".resultListItem" ).dblclick(function() {
-        let tree = completeInfo($(this).attr('id'))
+        let tree = completeInfo($(this).attr('id'));
         searchMap.setViewToMarker(tree);
-        var rendered = Mustache.render(treeDetailsTemplate, tree);
-        $("#treeDetails").empty();
-        $("#treeDetails").append(rendered);
+        updateTreeDetails(tree);
     });
 }
 

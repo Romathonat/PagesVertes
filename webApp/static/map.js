@@ -2,10 +2,15 @@ class SearchMap {
     constructor(divId) {
         this.treeMapTemplate = $('#mapMarkerTemplate').html();
 
+        this.maxZoom = 22;
+        this.defaultZoom = 15;
+        this.defaultLatitude = 45.7807286829;
+        this.defaultLongitude = 4.85788730701;
+
         this.searchMap = L.map(divId, {
-            center: [45.7807286829, 4.85788730701],
-            zoom: 15,
-            maxZoom: 18
+            center: [this.defaultLatitude, this.defaultLongitude],
+            zoom: this.defaultZoom,
+            maxZoom: this.maxZoom
         });
 
         this.markers = L.markerClusterGroup(); //markerClusterGroup layer object containing the markers
@@ -15,7 +20,7 @@ class SearchMap {
 
         L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
             attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-            maxZoom: 18,
+            maxZoom: this.maxZoom,
             id: 'romathonat.23e4b6a0',
             accessToken: 'pk.eyJ1Ijoicm9tYXRob25hdCIsImEiOiJjaXZmM2J4M2cwMDM2Mnpxa253cHVkdHA0In0.FU0Ju6sGpWmlm74TEphPbA'
         }).addTo(this.searchMap);
@@ -42,6 +47,13 @@ class SearchMap {
         marker.bindPopup(renderedTemplate);
         this.markers.addLayer(marker);
         this.markersIndex[currentTree.id] = marker;
+        marker.on("click", function() {
+            updateTreeDetails(currentTree);
+        });
+    }
+
+    resetView(){
+        this.searchMap.setView(new L.LatLng(this.defaultLatitude, this.defaultLongitude), this.defaultZoom);
     }
 
     setViewToMarker(tree) {
