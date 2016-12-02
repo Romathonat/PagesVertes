@@ -54,7 +54,7 @@
 
 
     <div class="mainContent">
-        <div id="searchOverlay" class="ui   horizontal segments">
+        <div id="searchOverlay" class="ui horizontal segments">
             <div id="mapSegment" class="ui segment">
                 <div id="mapId"></div>
             </div>
@@ -62,7 +62,7 @@
                 <div id="treeList" class="ui relaxed divided list"></div>
             </div>
         </div>
-        <div id="treeDetails"></div>
+            <div id="treeDetails"></div>
     </div>
 </body>
 
@@ -87,6 +87,7 @@
 <template id="treeListTemplate">
     {{#trees}}
     <div id="{{ id }}" class="item resultListItem">
+        <i class="large middle aligned users icon"></i>
         <div class="content">
             <h4> {{ id }} </h4>
             <div class="genderName">{{ nomBinominal.genre }}</div>

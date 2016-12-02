@@ -5,13 +5,13 @@ var searchMap;
 
 //This function join the json to reconstuct one tree data
 function completeInfo(idTree){
-    var currentTree = arbre[idTree];
+    var currentTree = jQuery.extend(true, {}, arbre[idTree]);
 
     //here we are making the join, if necessary
     if (typeof currentTree.nomBinominal === 'string') {
-        currentBinominalName = nomBinominal[currentTree.nomBinominal];
-        currentBinominalName.feuillage = feuillage[currentBinominalName.feuillage];
-        currentTree.nomBinominal = currentBinominalName;
+        currentTree.nomBinominal = jQuery.extend(true, {}, nomBinominal[currentTree.nomBinominal]);
+        currentTree.nomBinominal.feuillage = jQuery.extend(true, {}, feuillage[currentTree.nomBinominal.feuillage]);
+
     }
     return(currentTree);
 }
@@ -29,7 +29,7 @@ function searchBinominalName(binName){
     jQuery.each(arbre, function(i, val) {
         if(val.nomBinominal == binName) {
             let tree = completeInfo(val.id);
-            temp.push(val);
+            temp.push(tree);
             searchMap.setMarker(tree);
         }});
     var rendered = Mustache.render(treeListTemplate, {trees: temp});
@@ -47,7 +47,11 @@ function searchBinominalName(binName){
     });
 
     $( ".resultListItem" ).dblclick(function() {
-        searchMap.setViewToMarker(arbre[$(this).attr('id')]);
+        let tree = completeInfo($(this).attr('id'))
+        searchMap.setViewToMarker(tree);
+        var rendered = Mustache.render(treeDetailsTemplate, tree);
+        $("#treeDetails").empty();
+        $("#treeDetails").append(rendered);
     });
 }
 
