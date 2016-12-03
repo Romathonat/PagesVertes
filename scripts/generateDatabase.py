@@ -5,26 +5,35 @@ from utils import hashableDict
 
 PATH_JSON = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'webApp', 'json')
 
-sanitized_datas, incomplete_data = sanitize(False)
 
-#those are the tables of our model
-#python dict are hashable, very good to gain perfs
+def load_gps():
+    """
+    Load the gps from arbreGPS.txt
+    """
+    gps = {}
+    with open(os.path.join(os.path.dirname(__file__), '../data/arbresGPS.txt'), 'r+') as f:
+        for line in f:
+            line = line.replace(' ', '')
+            id_arbre, latitude, longitude = line.split(',')
+            longitude = longitude.rstrip()
+            gps['ar'+str(id_arbre)] = (latitude, longitude)
+    return gps
+
+sanitized_data, incomplete_data = sanitize(False)
+
+# those are the tables of our model
+# python dict are hashable, good to gain perfs
 arbre = set()
 nomBinominal = set()
 feuillage = set()
 
-#we load the gps into the memory
-gps = {}
-with open(os.path.join(os.path.dirname(__file__),'../data/arbresGPS.txt'), 'r+') as f:
-    for line in f:
-        line = line.replace(' ', '')
-        id_arbre, latitude, longitude = line.split(',')
-        longitude = longitude.rstrip()
-        gps['ar'+str(id_arbre)] = (latitude, longitude)
+# we load the gps into the memory
+gps = load_gps()
 
-for line in sanitized_datas:
+# for each sanitized_data, we format to JSON correctly
+for line in sanitized_data:
     gps_cordinate = True
-    tree_latitude, tree_longitude = 0,0
+    tree_latitude, tree_longitude = 0, 0
     try:
         tree_latitude, tree_longitude = gps[line[1]]
     except:
@@ -40,7 +49,7 @@ for line in sanitized_datas:
         genre = line[3][0].upper()+line[3][1:]
 
         new_nomBinominal = {'genre': genre,'espece': line[4], 'nomFrancais':line[2], 'feuillage': line[5],
-        'info_francais': line[9], 'url': line[10], 'description': line[11], 'nom_francais_suggere': line[12]}
+        'info_francais': line[9], 'genus_page': line[10], 'species_page': line[11]}
 
         #we add this data only if it is not here yet
         nomBinominal.add(hashableDict(new_nomBinominal))

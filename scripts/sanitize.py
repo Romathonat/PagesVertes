@@ -5,8 +5,12 @@ from wikipediaQueryEngine import WikipediaQueryEngine
 import os
 
 def sanitize(useWikipedia):
-    """useWikipedia is a boolean telling if we want to add a step to enrich and
-    correct data with wikipedia"""
+    """
+    Open arbre.xls and sanitize it.
+    useWikipedia is a boolean telling if we want to add a step to enrich and
+    correct data with wikipedia
+    Return the new data as a list, and the errors we found
+    """
 
     excel_file = xlrd.open_workbook(os.path.join(os.path.dirname(__file__),'../data/arbres.xls'))
     data = excel_file.sheets()[0]
@@ -81,20 +85,19 @@ def sanitize(useWikipedia):
         ('quercus', 'trojana'): 'feuillu'
     }
 
-    for row in range(data.nrows):
+    for row in range(1, data.nrows):
         new_line = [normalize(data.cell(row,i).value) for i in range(data.ncols)]
-        #we expand the size of the line to add  info_french, url and description
+
+        #we expand the size of the line to add info_french, url and description
         new_line.extend(["" for i in range(4)])
 
         if new_line[4] != 'sp.':
             #we correct datas with wikipedia, if requested
-            if useWikipedia and row > 0:
+            if useWikipedia:
                 print('{} {} {}'.format(data.cell(row,2).value, new_line[3], new_line[4]))
                 r = w.enrich_data(data.cell(row,2).value, new_line[3], new_line[4])
 
                 if r and r['genus'] != '' and r['species'] != '':
-                    #if we have a blank for the type_francais
-
                     new_line[3] = normalize(r['genus'])
                     new_line[4] = normalize(r['species'])
 
@@ -104,7 +107,7 @@ def sanitize(useWikipedia):
                     new_line[11] = r['species_page']
 
 
-            #we could have mistake here, so we need to check the espece for each type we have
+            # we could have a mistake here, so we need to check the espece for each type we have
             for type_francais, espece in correction_espece_type.items():
                 if new_line[2] == type_francais:
                     new_line[4] = espece
@@ -118,12 +121,12 @@ def sanitize(useWikipedia):
                 if (new_line[3], new_line[4]) == espece_genre:
                     new_line[5] = type_arbre
 
-            #we don't pay attention to the first line
-            if row > 0:
-                if new_line[2] != '' and new_line[3] != '' and new_line[4] != '':
-                    new_data.append(new_line)
-                else:
-                    incomplete_data.append(new_line)
+            # if we don't have the type, the genus and the specie, we add this line to errors
+            if new_line[2] != '' and new_line[3] != '' and new_line[4] != '':
+                new_data.append(new_line)
+            else:
+                incomplete_data.append(new_line)
+
         else:
             incomplete_data.append(new_line)
 
@@ -131,6 +134,6 @@ def sanitize(useWikipedia):
     errors = checkDF(new_data)
 
     for line in errors:
-        print(line)
+        print("Here are the error violating DF! {}".format(line))
 
     return (new_data, incomplete_data)
