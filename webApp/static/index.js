@@ -5,29 +5,51 @@ var searchMap;
 
 //This function join the json to reconstuct one tree data
 function completeInfo(idTree){
-    var currentTree = jQuery.extend(true, {}, arbre[idTree]);
-
-    //here we are making the join, if necessary
-    if (typeof currentTree.nomBinominal === 'string') {
-        currentTree.nomBinominal = jQuery.extend(true, {}, nomBinominal[currentTree.nomBinominal]);
-        currentTree.nomBinominal.feuillage = jQuery.extend(true, {}, feuillage[currentTree.nomBinominal.feuillage]);
-
+    if (typeof arbre[idTree] === "undefined"){
+        return undefined;
     }
-    return(currentTree);
+    else {
+        var currentTree = jQuery.extend(true, {}, arbre[idTree]);
+
+        if (typeof currentTree.nomBinominal === 'string') {
+            currentTree.nomBinominal = jQuery.extend(true, {}, nomBinominal[currentTree.nomBinominal]);
+            currentTree.nomBinominal.feuillage = jQuery.extend(true, {}, feuillage[currentTree.nomBinominal.feuillage]);
+        }
+        return(currentTree);
+    }
 }
 
 function searchID() {
     searchMap.clearMap();
-    let idTree = document.getElementById("idTree").value.toLowerCase();
+    $('#binominalDropdown').dropdown('restore defaults');
+    let idTree = document.getElementById("idTree").value.trim().toLowerCase();
     var tree = completeInfo(idTree);
-    searchMap.setMarker(tree);
+    if (typeof tree === 'undefined'){
+        updateTreeDetails(undefined);
+        updateTreeList([]);
+    }
+    else {
+        searchMap.setMarker(tree);
+        updateTreeDetails(tree);
+        updateTreeList([tree]);
+    }
+
 }
 
 function updateTreeDetails(tree) {
-    var rendered = Mustache.render(treeDetailsTemplate, tree);
     $("#treeDetails").empty();
-    $("#treeDetails").append(rendered);
+    if (typeof tree !== 'undefined'){
+        var rendered = Mustache.render(treeDetailsTemplate, tree);
+        $("#treeDetails").append(rendered);
+    }
 }
+
+function updateTreeList(trees) {
+    $("#treeList").empty();
+    var rendered = Mustache.render(treeListTemplate, {trees: trees});
+    $("#treeList").append(rendered);
+}
+
 
 function searchBinominalName(binName){
     searchMap.clearMap();
@@ -38,9 +60,7 @@ function searchBinominalName(binName){
             temp.push(tree);
             searchMap.setMarker(tree);
         }});
-    var rendered = Mustache.render(treeListTemplate, {trees: temp});
-    $("#treeList").empty();
-    $("#treeList").append(rendered);
+    updateTreeList(temp);
 
     searchMap.resetView();
 
@@ -68,8 +88,9 @@ $( document ).ready(function() {
 
     searchMap = new SearchMap("mapId");
 
-    $('.ui.dropdown')
+    $('#binominalDropdown')
     .dropdown({
+        forceSelection: false,
         onChange: function(dropdownValue, text, $selectedItem) {
             searchBinominalName(dropdownValue);
         }
