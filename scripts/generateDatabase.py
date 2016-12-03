@@ -8,17 +8,16 @@ PATH_JSON = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file_
 
 def load_gps():
     """
-    Load the gps from arbreGPS.txt. Return the GPS and line we deleted
+    Load the gps from arbreGPS.txt. Return the GPS
     """
     gps = {}
-    data_without_GPS = []
     with open(os.path.join(os.path.dirname(__file__), '../data/arbresGPS.txt'), 'r+') as f:
         for line in f:
             line = line.replace(' ', '')
             id_arbre, latitude, longitude = line.split(',')
             longitude = longitude.rstrip()
             gps['ar'+str(id_arbre)] = (latitude, longitude)
-    return (gps, data_without_GPS)
+    return gps
 
 sanitized_data, incomplete_data = sanitize(False)
 
@@ -27,9 +26,9 @@ sanitized_data, incomplete_data = sanitize(False)
 arbre = set()
 nomBinominal = set()
 feuillage = set()
-
+data_without_GPS = []
 # we load the gps into the memory
-gps, data_without_GPS  = load_gps()
+gps = load_gps()
 
 # for each sanitized_data, we format to JSON correctly
 for line in sanitized_data:
@@ -38,7 +37,7 @@ for line in sanitized_data:
     try:
         tree_latitude, tree_longitude = gps[line[1]]
     except:
-        #print("Missing gps coordinates for :"+line[1])
+        # print("Missing gps coordinates for :"+line[1])
         gps_cordinate = False
 
     #we do not add this data if we don't have the gps informations
@@ -58,8 +57,8 @@ for line in sanitized_data:
         new_arbre = {'id': line[1],'hauteur': line[6], 'diametreTronc': line[7], 'diametreCouronne': line[8],\
         'latitude' : tree_latitude, 'longitude': tree_longitude, 'nomBinominal': genre+" "+line[4]}
         arbre.add(hashableDictArbre(new_arbre))
-
-print(len(arbre))
+    else:
+        data_without_GPS.append(line)
 
 #now we dump datas into json files
 with open(os.path.join(PATH_JSON,'feuillage.json'), 'w') as f:
@@ -76,7 +75,9 @@ with open(os.path.join(PATH_JSON,'arbre.json'), 'w') as f:
     f.write(json.dumps(arbre_json))
 
 with open(os.path.join(PATH_JSON,'incomplete_data.json'), 'w') as f:
+    f.write('Number: {}\n'.format(len(incomplete_data)))
     f.write(json.dumps(incomplete_data))
 
 with open(os.path.join(PATH_JSON,'data_without_GPS.json'), 'w') as f:
+    f.write('Number: {}\n'.format(len(data_without_GPS)))
     f.write(json.dumps(data_without_GPS))
