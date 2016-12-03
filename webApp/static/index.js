@@ -1,36 +1,80 @@
+var treeListTemplate;
+var binominaltemplate;
+var treeDetailsTemplate;
+var searchMap;
+
 //This function join the json to reconstuct one tree data
 function completeInfo(idTree){
-    var currentTree = arbre[idTree];
+    var currentTree = jQuery.extend(true, {}, arbre[idTree]);
 
     //here we are making the join, if necessary
-    if (typeof currentTree["nomBinominal"] === 'string') {
-        currentBinominalName = nomBinominal[currentTree["nomBinominal"]];
-        currentBinominalName["feuillage"] = feuillage[currentBinominalName["feuillage"]];
-        currentTree["nomBinominal"] = currentBinominalName;
+    if (typeof currentTree.nomBinominal === 'string') {
+        currentTree.nomBinominal = jQuery.extend(true, {}, nomBinominal[currentTree.nomBinominal]);
+        currentTree.nomBinominal.feuillage = jQuery.extend(true, {}, feuillage[currentTree.nomBinominal.feuillage]);
+
     }
-    return(currentTree)
+    return(currentTree);
 }
 
 function searchID() {
+    searchMap.clearMap();
     let idTree = document.getElementById("idTree").value.toLowerCase();
-    var tree = completeInfo(idTree)
-    setMarker(tree)
+    var tree = completeInfo(idTree);
+    searchMap.setMarker(tree);
+}
+
+function updateTreeDetails(tree) {
+    var rendered = Mustache.render(treeDetailsTemplate, tree);
+    $("#treeDetails").empty();
+    $("#treeDetails").append(rendered);
+}
+
+function searchBinominalName(binName){
+    searchMap.clearMap();
+    let temp = [];
+    jQuery.each(arbre, function(i, val) {
+        if(val.nomBinominal == binName) {
+            let tree = completeInfo(val.id);
+            temp.push(tree);
+            searchMap.setMarker(tree);
+        }});
+    var rendered = Mustache.render(treeListTemplate, {trees: temp});
+    $("#treeList").empty();
+    $("#treeList").append(rendered);
+
+    searchMap.resetView();
+
+    $(".resultListItem").hover(
+        function(){
+            $(this).css("background-color", "#89C4F4");
+            searchMap.highlightMarker(arbre[$(this).attr('id')]);
+        },
+        function(){
+            $(this).css("background-color", "transparent");
+            searchMap.unhighlightMarker(arbre[$(this).attr('id')]);
+    });
+
+    $( ".resultListItem" ).dblclick(function() {
+        let tree = completeInfo($(this).attr('id'));
+        searchMap.setViewToMarker(tree);
+        updateTreeDetails(tree);
+    });
 }
 
 $( document ).ready(function() {
+    treeListTemplate = $('#treeListTemplate').html();
+    binominaltemplate = $('#binominalNameTemplate').html();
+    treeDetailsTemplate = $('#treeDetailsTemplate').html();
+
+    searchMap = new SearchMap("mapId");
+
     $('.ui.dropdown')
     .dropdown({
         onChange: function(dropdownValue, text, $selectedItem) {
-            clearMap()
-            jQuery.each(arbre, function(i, val) {
-                if(val.nomBinominal == dropdownValue) {
-                    let tree = completeInfo(val.id)
-                    setMarker(tree)
-                }
-        })}
+            searchBinominalName(dropdownValue);
+        }
     });
 
-    let binominaltemplate = $('#binominalNameTemplate').html();
     var rendered = Mustache.render(binominaltemplate, {name: Object.keys(nomBinominal)});
     $("#binominalName-menu").append(rendered);
 });
