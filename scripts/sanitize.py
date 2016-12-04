@@ -96,6 +96,7 @@ def sanitize(useWikipedia):
             if useWikipedia:
                 print('{} {} {}'.format(data.cell(row,2).value, new_line[3], new_line[4]))
                 r = w.enrich_data(data.cell(row,2).value, new_line[3], new_line[4])
+                #print(r)
 
                 if r and r['genus'] != '' and r['species'] != '':
                     new_line[3] = normalize(r['genus'])
@@ -105,6 +106,8 @@ def sanitize(useWikipedia):
                     new_line[9] = r['info_french']
                     new_line[10] = r['genus_page']
                     new_line[11] = r['species_page']
+                else:
+                    incomplete_data.append(new_line)
 
 
             # we could have a mistake here, so we need to check the espece for each type we have

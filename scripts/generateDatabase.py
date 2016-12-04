@@ -19,7 +19,7 @@ def load_gps():
             gps['ar'+str(id_arbre)] = (latitude, longitude)
     return gps
 
-sanitized_data, incomplete_data = sanitize(False)
+sanitized_data, incomplete_data = sanitize(True)
 
 # those are the tables of our model
 # python dict are hashable, good to gain perfs
