@@ -4,6 +4,7 @@ import xlrd
 from utils import normalize
 import time
 from datetime import timedelta
+import json
 
 def benchmark():
 
@@ -13,11 +14,12 @@ def benchmark():
 
     data = excel_file.sheets()[0]
 
+    id_list = data.col(1)
     names_french_list = data.col(2)
     genus_list = data.col(3)
     species_list = data.col(4)
     
-    tupleList = list(zip(names_french_list, genus_list, species_list))
+    tupleList = list(zip(id_list, names_french_list, genus_list, species_list))
 
     wqe = WikipediaQueryEngine()
 
@@ -27,10 +29,14 @@ def benchmark():
 
     errors = []
 
+    successes = {}
+
     for i in range(total-1):
-        r = wqe.enrich_data(tupleList[i+1][0].value, tupleList[i+1][1].value, tupleList[i+1][2].value)
+        r = wqe.enrich_data(tupleList[i+1][1].value, tupleList[i+1][2].value, tupleList[i+1][3].value)
         if bool(r):
+            
             success += 1
+            successes[tupleList[i+1][0].value] = r
         else:
             errors.append((tupleList[i+1][0].value, tupleList[i+1][1].value, tupleList[i+1][2].value))
         count += 1
@@ -44,5 +50,8 @@ def benchmark():
     elapsed_time_secs = time.time() - start_time
 
     print("Execution took: %s secs (Wall clock time)" % timedelta(seconds=round(elapsed_time_secs)))
+    
+    with open('enriched_data.json', 'w') as fp:
+        json.dump(successes, fp, sort_keys=True, indent=4)
 
 benchmark()

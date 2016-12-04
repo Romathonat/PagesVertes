@@ -74,15 +74,15 @@ class WikipediaQueryEngine:
                 name += word+' '
         name = name.strip()
 
-        result = {}
+        result = { 'genus':'', 'genus_page':{}, 'species':'', 'species_page':{}, 'info_french':{} }
 
         if(undefined_species):
-            # We just have to find a genus page
+            # We only have to find a genus page
             queries_for_genus = set()
-            queries_for_genus.add(name)
-            queries_for_genus.add(name.split()[0])
             queries_for_genus.add(genus)
-                        
+            queries_for_genus.add(name.split()[0])
+            queries_for_genus.add(name)    
+
             for query_for_genus in queries_for_genus:
                 genus_page = self.find_genus_page_for(query_for_genus)
                 if genus_page:
@@ -90,13 +90,16 @@ class WikipediaQueryEngine:
                     result["genus"] = genus_page["info_french"]["Genre"]
                     break
         else:
-            # We have to find a species page
+            # We have to find a genus page AND a species page
             species_page = self.find_species_page_for(name)
             if not species_page :
+                # plant name did not return a species page, use binominal name build from genus and species names
                 species_page = self.find_species_page_for(self.build_binominal_name_for_query(genus, species))
-            if species_page:
+            if species_page: 
+                # we finaly found a species page 
                 result["species_page"] = species_page.copy()
                 result["species"] = self.build_species_name_from_binominal_name(species_page["info_french"]["Nom binominal"], species_page["info_french"]["Genre"])
+
             # And also the corresponding genus page
             genus_page = self.find_genus_page_for(name)
             queries_for_genus = set()
@@ -112,20 +115,20 @@ class WikipediaQueryEngine:
                     result["genus"] = genus_page["info_french"]["Genre"]
                     break
 
-        genus_page_info = {}
-        if "genus_page" in result:
-            genus_page_info = result["genus_page"]["info_french"].copy()
+        max_page_info = {}
+        if "genus_page" in result and result["genus_page"]:
+            max_page_info = result["genus_page"]["info_french"].copy()
             del result["genus_page"]["info_french"] 
 
         species_page_info = {}
-        if "species_page" in result:
+        if "species_page" in result and result["species_page"]:
             species_page_info = result["species_page"]["info_french"].copy()
             del result["species_page"]["info_french"]
 
-        genus_page_info.update(species_page_info)
+        max_page_info.update(species_page_info)
 
-        if genus_page_info:
-            result["info_french"] = genus_page_info
+        if max_page_info:
+            result["info_french"] = max_page_info
 
         WikipediaQueryEngine.results_by_tuple[(name_french, genus, species)] = result.copy()
 
@@ -164,6 +167,7 @@ class WikipediaQueryEngine:
                 page_results = self.scrape_page(url)
                 WikipediaQueryEngine.scraped_pages_by_url[url] = page_results
 
+            # check if page is relevant (must refer to a plantae)
             if "Règne" not in page_results["info_french"] or utils.normalize(page_results["info_french"]["Règne"]) != "plantae":
                 raise Exception
 
@@ -234,56 +238,3 @@ class WikipediaQueryEngine:
             results["info_french"] = {}
 
         return results
-
-'''
-w = WikipediaQueryEngine()
-
-r = w.enrich_data("Erable plane", "ACER", "platanoides")
-print(json.dumps(r, indent=4, sort_keys=True))
-print('\n')
-r = w.enrich_data("Erable indéterminé", "ACER", "sp.")
-print(json.dumps(r, indent=4, sort_keys=True))
-print('\n')
-r = w.enrich_data("Erable indéterminé", "ACER", "sp.")
-print(json.dumps(r, indent=4, sort_keys=True))
-print('\n')
-r = w.enrich_data("", "", "")
-print(json.dumps(r, indent=4, sort_keys=True))
-print('\n')
-r = w.enrich_data("héhé", "Harry potter", "saccharinum")
-print(json.dumps(r, indent=4, sort_keys=True))
-print('\n')
-r = w.enrich_data("Anus", "Casserole", "saccharinum")
-print(json.dumps(r, indent=4, sort_keys=True))
-print('\n')
-r = w.enrich_data("Pommier indéterminé", "MALUS", "saccharinum")
-print(json.dumps(r, indent=4, sort_keys=True))
-print('\n')
-r = w.enrich_data("Epicéa de Koster", "PICEA", "pungens")
-print(json.dumps(r, indent=4, sort_keys=True))
-print('\n')
-r = w.enrich_data("Marronnier rouge", "Aesculus", "x carnea")
-print(json.dumps(r, indent=4, sort_keys=True))
-print('\n')
-r = w.enrich_data("Chêne chevelu", "lol", "lil")
-print(json.dumps(r, indent=4, sort_keys=True))
-print('\n')
-r = w.enrich_data("Platane à feuilles d'érable", "lol", "lil")
-print(json.dumps(r, indent=4, sort_keys=True))
-print('\n')
-r = w.enrich_data("Savonnier", "KOELREUTERIA", "paniculata")
-print(json.dumps(r, indent=4, sort_keys=True))
-print('\n')
-r = w.enrich_data("Buis", "Buxus", "Sempervirens")
-print(json.dumps(r, indent=4, sort_keys=True))
-print('\n')
-r = w.enrich_data("Erable indetermIné", "blabla", "zopzop")
-print(json.dumps(r, indent=4, sort_keys=True))
-print('\n')
-r = w.enrich_data("Platane à feuilles d'érable", "PLATANUS", "x acerifolia")
-print(json.dumps(r, indent=4, sort_keys=True))
-print('\n')
-r = w.enrich_data("Erable plane", "acer", "platanoides")
-print(json.dumps(r, indent=4, sort_keys=True))
-print('\n')
-'''
