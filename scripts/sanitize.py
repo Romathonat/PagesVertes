@@ -4,11 +4,9 @@ from checkDF import checkDF
 from wikipediaQueryEngine import WikipediaQueryEngine
 import os
 
-def sanitize(useWikipedia):
+def sanitize():
     """
     Open arbre.xls and sanitize it.
-    useWikipedia is a boolean telling if we want to add a step to enrich and
-    correct data with wikipedia
     Return the new data as a list, and the errors we found
     """
 
@@ -17,8 +15,7 @@ def sanitize(useWikipedia):
     new_data = []
     incomplete_data = []
 
-    if(useWikipedia):
-        w = WikipediaQueryEngine()
+
     #this dict contains the right espece for each type en francais
     correction_espece_type = {
         'frene a fleurs': 'ornus',
@@ -92,24 +89,6 @@ def sanitize(useWikipedia):
         new_line.extend(["" for i in range(4)])
 
         if new_line[4] != 'sp.':
-            #we correct datas with wikipedia, if requested
-            if useWikipedia:
-                print('{} {} {}'.format(data.cell(row,2).value, new_line[3], new_line[4]))
-                r = w.enrich_data(data.cell(row,2).value, new_line[3], new_line[4])
-                #print(r)
-
-                if r and r['genus'] != '' and r['species'] != '':
-                    new_line[3] = normalize(r['genus'])
-                    new_line[4] = normalize(r['species'])
-
-                    #this line is a nested informations
-                    new_line[9] = r['info_french']
-                    new_line[10] = r['genus_page']
-                    new_line[11] = r['species_page']
-                else:
-                    incomplete_data.append(new_line)
-
-
             # we could have a mistake here, so we need to check the espece for each type we have
             for type_francais, espece in correction_espece_type.items():
                 if new_line[2] == type_francais:

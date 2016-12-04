@@ -1,10 +1,11 @@
 from sanitize import sanitize
 import json
 import os
+from wikipediaQueryEngine import WikipediaQueryEngine
 from utils import hashableDict, hashableDictArbre
 
 PATH_JSON = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'webApp', 'json')
-
+USE_WIKIPEDIA = True
 
 def load_gps():
     """
@@ -19,7 +20,7 @@ def load_gps():
             gps['ar'+str(id_arbre)] = (latitude, longitude)
     return gps
 
-sanitized_data, incomplete_data = sanitize(True)
+sanitized_data, incomplete_data = sanitize()
 
 # those are the tables of our model
 # python dict are hashable, good to gain perfs
@@ -29,6 +30,10 @@ feuillage = set()
 data_without_GPS = []
 # we load the gps into the memory
 gps = load_gps()
+
+
+if(USE_WIKIPEDIA):
+    w = WikipediaQueryEngine()
 
 # for each sanitized_data, we format to JSON correctly
 for line in sanitized_data:
@@ -40,18 +45,36 @@ for line in sanitized_data:
         # print("Missing gps coordinates for :"+line[1])
         gps_cordinate = False
 
-    #we do not add this data if we don't have the gps informations
+    # we do not add this data if we don't have the gps informations
     if gps_cordinate:
+        # we correct datas with wikipedia, if requested
+        if USE_WIKIPEDIA:
+            print('{} {} {}'.format(line[2], line[3], line[4]))
+            r = w.enrich_data(line[2], line[3], line[4])
+            #print(r)
+
+            if r and r['genus'] != '' and r['species'] != '':
+                #line[3] = normalize(r['genus'])
+                #line[4] = normalize(r['species'])
+
+                #this line is a nested informations
+                line[9] = r['info_french']
+                line[10] = r['genus_page']
+                line[11] = r['species_page']
+            else:
+                incomplete_data.append(line)
+
         new_feuillage = {'typeArbre': line[5]}
         feuillage.add(hashableDict(new_feuillage))
 
-        #the firt letter must be upper
+        # the firt letter must be upper
         genre = line[3][0].upper()+line[3][1:]
 
         new_nomBinominal = {'genre': genre,'espece': line[4], 'nom_vernaculaire':line[2], 'feuillage': line[5],
-        'info_francais': line[9], 'genus_page': line[10], 'species_page': line[11]}
+        'info_francais': hashableDict(line[9]), \
+        'genus_page': hashableDict(line[10]), 'species_page': hashableDict(line[11])}
 
-        #we add this data only if it is not here yet
+        # we add this data only if it is not here yet
         nomBinominal.add(hashableDict(new_nomBinominal))
 
         new_arbre = {'id': line[1],'hauteur': line[6], 'diametreTronc': line[7], 'diametreCouronne': line[8],\
@@ -60,9 +83,9 @@ for line in sanitized_data:
     else:
         data_without_GPS.append(line)
 
-#now we dump datas into json files
+# now we dump datas into json files
 with open(os.path.join(PATH_JSON,'feuillage.json'), 'w') as f:
-    #we get the representation of
+    # we get the representation of
     feuillage_json = list(feuillage)
     f.write(json.dumps(feuillage_json))
 
