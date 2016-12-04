@@ -61,8 +61,6 @@ for line in sanitized_data:
                 line[9] = r['info_french']
                 line[10] = r['genus_page']
                 line[11] = r['species_page']
-            else:
-                incomplete_data.append(line)
 
         new_feuillage = {'typeArbre': line[5]}
         feuillage.add(hashableDict(new_feuillage))
