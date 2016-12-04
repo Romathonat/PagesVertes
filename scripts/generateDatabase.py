@@ -53,7 +53,7 @@ for line in sanitized_data:
             r = w.enrich_data(line[2], line[3], line[4])
             #print(r)
 
-            if r and r['genus'] != '' and r['species'] != '':
+            if r:
                 #line[3] = normalize(r['genus'])
                 #line[4] = normalize(r['species'])
 
