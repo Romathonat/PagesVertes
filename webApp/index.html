@@ -81,15 +81,18 @@
 
 <template id="treeDetailsTemplate">
     <dl>
-        <dt>Identifiant</dt><dd><h4> {{ id }} </h4></dd>
-        <dt>Genre</dt><dd class="genderName">{{ nomBinominal.genre }}</dd>
-        <dt>Espèce</dt><dd class="speciesName">{{ nomBinominal.espece }}</dd>
-        <dt>Feuillage</dt><dd>{{ nomBinominal.feuillage.typeArbre }}</dd>
-        <dt>Hauteur</dt><dd>{{ hauteur }}</dd>
-        <dt>Diamètre tronc</dt><dd>{{ diametreTronc }}</dd>
-        <dt>Diamètre courronne</dt><dd>{{ diametreCourrone }}</dd>
-        <dt>Latitude</dt><dd>{{ latitude }}</dd>
-        <dt>Longitude</dt><dd>{{ longitude }}</dd>
+        <dt>Identifiant</dt><dd><h4> {{ tree.id }} </h4></dd>
+        <dt>Genre</dt><dd class="genderName">{{ tree.nomBinominal.genre }}</dd>
+        <dt>Espèce</dt><dd class="speciesName">{{ tree.nomBinominal.espece }}</dd>
+        <dt>Feuillage</dt><dd>{{ tree.nomBinominal.feuillage.typeArbre }}</dd>
+        <dt>Hauteur</dt><dd>{{ tree.hauteur }}</dd>
+        <dt>Diamètre tronc</dt><dd>{{ tree.diametreTronc }}</dd>
+        <dt>Diamètre courronne</dt><dd>{{ tree.diametreCouronne }}</dd>
+        <dt>Latitude</dt><dd>{{ tree.latitude }}</dd>
+        <dt>Longitude</dt><dd>{{ tree.longitude }}</dd>
+        <dt>Infos</dt><dd>{{ info_french }}</dd>
+        <dt>Infos genre</dt><dd>{{ genus_page }}</dd>
+        <dt>Infos espece</dt><dd>{{ species_page }}</dd>
     </dl>
 </template>
 
@@ -97,7 +100,7 @@
     {{#trees}}
     <div id="{{ id }}" class="item resultListItem">
         <div class="unselectedItem">
-            <img class="floated left image" src="static/images/leaf-list.png">
+            <img class="floated left top aligned image" src="static/images/leaf-list.png">
             <div class="content">
                 <dl>
                     <dt>Identifiant</dt><dd><h4> {{ id }} </h4></dd>

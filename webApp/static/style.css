@@ -63,12 +63,13 @@ pre {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
 .selectedItem{
     border-left: thick solid #89C4F4;
     padding-left: 10px;
-    margin-top: 14px;
 }
 
 .unselectedItem{
     border-left: thick solid transparent;
     padding-left: 10px;
-    margin-top: 14px;
+}
 
+.resultListItem .content{
+    display: inline-block;
 }

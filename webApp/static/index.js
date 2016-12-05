@@ -39,7 +39,10 @@ function searchID() {
 function updateTreeDetails(tree) {
     $("#treeDetails").empty();
     if (typeof tree !== 'undefined'){
-        var rendered = Mustache.render(treeDetailsTemplate, tree);
+        var rendered = Mustache.render(treeDetailsTemplate, {tree: tree,
+            genus_page: JSON.stringify(tree.nomBinominal.genus_page),
+            info_french: JSON.stringify(tree.nomBinominal.info_francais),
+            species_page: JSON.stringify(tree.nomBinominal.species_page)});
         $("#treeDetails").append(rendered);
     }
 }
