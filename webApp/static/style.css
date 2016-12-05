@@ -60,15 +60,15 @@ pre {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
     margin-left: 5px;
 }
 
-dl.inline dd {
-  display: inline;
-  margin: 0;
+.selectedItem{
+    border-left: thick solid #89C4F4;
+    padding-left: 10px;
+    margin-top: 14px;
 }
-dl.inline dd:after{
-  display: block;
-  content: '';
-}
-dl.inline dt{
-  display: inline-block;
-  min-width: 100px;
+
+.unselectedItem{
+    border-left: thick solid transparent;
+    padding-left: 10px;
+    margin-top: 14px;
+
 }

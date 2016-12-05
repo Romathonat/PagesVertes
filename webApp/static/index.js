@@ -66,11 +66,11 @@ function searchBinominalName(binName){
 
     $(".resultListItem").hover(
         function(){
-            $(this).css("background-color", "#89C4F4");
+            $(this).find(".unselectedItem").addClass('selectedItem').removeClass('unselectedItem');
             searchMap.highlightMarker(arbre[$(this).attr('id')]);
         },
         function(){
-            $(this).css("background-color", "transparent");
+            $(this).find(".selectedItem").addClass('unselectedItem').removeClass('selectedItem');
             searchMap.unhighlightMarker(arbre[$(this).attr('id')]);
     });
 
