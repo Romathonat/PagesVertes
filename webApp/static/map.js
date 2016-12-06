@@ -1,4 +1,4 @@
-class SearchMap {
+    class SearchMap {
     constructor(divId) {
         this.treeMapTemplate = $('#mapMarkerTemplate').html();
 

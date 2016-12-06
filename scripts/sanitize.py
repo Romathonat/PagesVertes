@@ -88,29 +88,26 @@ def sanitize():
         #we expand the size of the line to add info_french, url and description
         new_line.extend(["" for i in range(4)])
 
-        if new_line[4] != 'sp.':
-            # we could have a mistake here, so we need to check the espece for each type we have
-            for type_francais, espece in correction_espece_type.items():
-                if new_line[2] == type_francais:
-                    new_line[4] = espece
+        # we could have a mistake here, so we need to check the espece for each type we have
+        for type_francais, espece in correction_espece_type.items():
+            if new_line[2] == type_francais:
+                new_line[4] = espece
 
-            for type_francais, espece_genre in correction_genre_espece.items():
-                if new_line[2] == type_francais:
-                    new_line[3] = espece_genre[0]
-                    new_line[4] = espece_genre[1]
+        for type_francais, espece_genre in correction_genre_espece.items():
+            if new_line[2] == type_francais:
+                new_line[3] = espece_genre[0]
+                new_line[4] = espece_genre[1]
 
-            for espece_genre, type_arbre in correction_type_arbre.items():
-                if (new_line[3], new_line[4]) == espece_genre:
-                    new_line[5] = type_arbre
+        for espece_genre, type_arbre in correction_type_arbre.items():
+            if (new_line[3], new_line[4]) == espece_genre:
+                new_line[5] = type_arbre
 
-            # if we don't have the type, the genus and the specie, we add this line to errors
-            if new_line[2] != '' and new_line[3] != '' and new_line[4] != '':
-                new_data.append(new_line)
-            else:
-                incomplete_data.append(new_line)
-
+        # if we don't have the type, the genus and the specie, we add this line to errors
+        if new_line[2] != '' and new_line[3] != '' and new_line[4] != '':
+            new_data.append(new_line)
         else:
             incomplete_data.append(new_line)
+
 
     #print(new_data)
     errors = checkDF(new_data)
