@@ -238,3 +238,9 @@ class WikipediaQueryEngine:
             results["info_french"] = {}
 
         return results
+
+w = WikipediaQueryEngine()
+
+res = w.enrich_data("nyssa sylvatica", "nyssa", "sylvatica")
+
+print(res)
