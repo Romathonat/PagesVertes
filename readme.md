@@ -26,3 +26,9 @@ USE_WIKIPEDIA = False
 Les fichiers json situés dans webApp/json correspondent à notre base de données. Le fichier incomplete_data.json correspond à l'ensemble des données qui ont été éliminées lors du traitement à cause d'un manque d'informations, et data_without_GPS correspond à l'ensemble des données qui n'ont pas de coordonnées GPS (et qui ne sont pas dans incomplete_data.json)
 
 
+## Convertir les json en script sql
+Le script de conversion convertit les fichiers json valides se situant dans webApp/json et produit le script sql correspondant dans data/sql. Si des fichiers json sont non valides, ils ne seront pas considérés, il faudra les modifier afin qu'ils puissent être convertis. Dans le mécanisme de conversion, les originaux ne sont pas modifiés.
+Pour effectuer la conversion, faites :
+```bash
+python scripts/json2sqlConverter.py
+```

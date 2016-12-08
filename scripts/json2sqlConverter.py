@@ -138,51 +138,6 @@ def file_writer(directory_path,file_name,content):
         f.write(content)
 
 
-def test():
-
-    path = "../webApp/json/feuillage.json"
-    #path = "../data/json/feuillage_short_standard.json"
-    data = open_json(path)
-    #print(data)
-
-    directory_json_path = "../webApp/json/"
-
-    content = template_header_file_sql()
-    content += "\n\n\n"
-
-    #for file_json in os.listdir(directory_json_path):
-    for file_json in glob.glob(os.path.join(directory_json_path, '*.json')):
-        #all json files are array that contains objects
-        data = open_json(file_json)
-
-        values = []
-
-        for dico in data:
-            fields = {}
-            values_item = []
-
-            for key in dico.keys():
-                if isinstance(dico[key],int):
-                    fields[key] = ("int(11)",True)
-                elif isinstance(dico[key],float):
-                    fields[key] = ("double",True)
-                else:
-                    fields[key] = ("varchar(255)",True)
-
-                values_item.append(dico[key])
-
-            values.append(values_item)
-
-        file_name = str(os.path.splitext(ntpath.basename(file_json))[0])
-        content += "\n\n" + template_table_sql(file_name,fields,values)
-
-
-
-    file_sql_name = "script_sql.sql"
-    directory_result_path = "../data/sql/"
-    file_writer(directory_result_path,file_sql_name,content)
-
-
 def create_script_SQL(directory_json_path):
 # create a script SQL to generate tables from json. 
 # directory_json_path parameter is the path to the directory that contains the json we want to create tables from.
@@ -195,28 +150,33 @@ def create_script_SQL(directory_json_path):
         #all json files are array that contains objects
         data = open_json(file_json)
 
-        values = []
+        if data != None:
+            values = []
 
-        for dico in data:
-            fields = {}
-            values_item = []
+            for dico in data:
+                fields = {}
+                values_item = []
 
-            for key in dico.keys():
-                if isinstance(dico[key],int):
-                    fields[key] = ("int(11)",True)
-                elif isinstance(dico[key],float):
-                    fields[key] = ("double",True)
-                else:
-                    fields[key] = ("varchar(255)",True)
+                for key in dico.keys():
+                    if isinstance(dico[key],int):
+                        fields[key] = ("int(11)",True)
+                    elif isinstance(dico[key],float):
+                        fields[key] = ("double",True)
+                    else:
+                        fields[key] = ("varchar(255)",True)
 
-                values_item.append(dico[key])
+                    values_item.append(dico[key])
 
-            values.append(values_item)
+                values.append(values_item)
 
         file_name = str(os.path.splitext(ntpath.basename(file_json))[0])
         content += "\n\n" + template_table_sql(file_name,fields,values)
 
 
     file_sql_name = "script_sql.sql"
-    directory_result_path = "../data/sql/"
+    directory_result_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),"../data/sql/")
     file_writer(directory_result_path,file_sql_name,content)
+
+
+path = os.path.join(os.path.dirname(os.path.realpath(__file__)),"../webApp/json/")
+create_script_SQL(path)
