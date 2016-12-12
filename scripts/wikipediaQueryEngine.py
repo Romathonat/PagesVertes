@@ -182,6 +182,8 @@ class WikipediaQueryEngine:
                     results["page_title"] = page.title
                     if("page_subtitle" in page_results):
                         results["page_subtitle"] = page_results["page_subtitle"]
+                    else:
+                        results["page_subtitle"] = ""
                     results["description"] = page.summary
             else :
                 # Check if page is genus
@@ -194,6 +196,8 @@ class WikipediaQueryEngine:
                     results["page_title"] = page.title
                     if("page_subtitle" in page_results):
                         results["page_subtitle"] = page_results["page_subtitle"]
+                    else:
+                        results["page_subtitle"] = ""
                     results["description"] = page.summary
         except:
             results = {}

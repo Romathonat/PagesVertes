@@ -5,6 +5,7 @@ from wikipediaQueryEngine import WikipediaQueryEngine
 from utils import hashableDict, hashableDictArbre
 
 PATH_JSON = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'webApp', 'json')
+PATH_INCOMPLETE_DATA = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'webApp', 'json','incomplete_data')
 USE_WIKIPEDIA = True
 
 def load_gps():
@@ -95,10 +96,13 @@ with open(os.path.join(PATH_JSON,'arbre.json'), 'w') as f:
     arbre_json = list(arbre)
     f.write(json.dumps(arbre_json))
 
-with open(os.path.join(PATH_JSON,'incomplete_data.json'), 'w') as f:
+if os.path.isdir(PATH_INCOMPLETE_DATA) == False:
+        os.makedirs(PATH_INCOMPLETE_DATA)
+
+with open(os.path.join(PATH_INCOMPLETE_DATA,'incomplete_data.json'), 'w') as f:
     f.write('Number: {}\n'.format(len(incomplete_data)))
     f.write(json.dumps(incomplete_data))
 
-with open(os.path.join(PATH_JSON,'data_without_GPS.json'), 'w') as f:
+with open(os.path.join(PATH_INCOMPLETE_DATA,'data_without_GPS.json'), 'w') as f:
     f.write('Number: {}\n'.format(len(data_without_GPS)))
     f.write(json.dumps(data_without_GPS))
