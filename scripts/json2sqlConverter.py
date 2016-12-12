@@ -144,7 +144,10 @@ def template_insert_values_table_sql(table_name,table_fields,table_values):
                 if is_first_value == False:
                     table += " , "
                 
-                table += "'"+ str(values_list[i]).replace("'","\\'") +"'"
+                if values_list[i] != "":
+                    table += "'"+ str(values_list[i]).replace("'","\\'") +"'"
+                else:
+                    table += "'Null'"
                 is_first_value = False
 
             table += ")"
@@ -256,7 +259,8 @@ def analyze_dico(dico,fields,values):
 
             values[key] = []
 
-        values[key].append(dico[key])
+        if key in dico.keys() and key in values:
+            values[key].append(dico[key])
 
     return (fields,values)
 
@@ -292,8 +296,6 @@ def convert_nom_binominal_json_to_sql():
     foliage_key = "feuillage"
     vernacular_name_key = "nom_vernaculaire"
 
-    # here are the second level keys we want to remove for the future processing
-    french_infos_genus_key_to_remove = "Genre"
 
     #here are the primary key fields
     species_page_pk = "url"
@@ -312,7 +314,8 @@ def convert_nom_binominal_json_to_sql():
     genus_page_fields = {}
     genus_page_values = {}
 
-    french_infos_fields = {}
+    french_infos_fields = {"Nom binominal":("varchar(255)",True),"Division":("varchar(255)",True),"Règne":("varchar(255)",True),"Classe":("varchar(255)",True),"Famille":("varchar(255)",True),"Sous-famille":("varchar(255)",True),"Clade":("varchar(255)",True),"Sous-règne":("varchar(255)",True),"Ordre":("varchar(255)",True),"Sous-classe":("varchar(255)",True),genus_key:("varchar(255)",True),specie_key:("varchar(255)",True),foliage_key:("varchar(255)",True),vernacular_name_key:("varchar(255)",True)}
+
     french_infos_values = {}
 
     if data != None:
@@ -341,11 +344,6 @@ def convert_nom_binominal_json_to_sql():
             french_infos_dico[foliage_key] = dico[foliage_key]
             french_infos_dico[vernacular_name_key] = dico[vernacular_name_key]
 
-            
-            
-            if french_infos_genus_key_to_remove in french_infos_dico.keys():
-                del french_infos_dico[french_infos_genus_key_to_remove]
-
 
 
             # now we go through dico values
@@ -361,13 +359,23 @@ def convert_nom_binominal_json_to_sql():
                     (genus_page_fields,genus_page_values) = analyze_dico(genus_page_dico,genus_page_fields,genus_page_values)
                 french_infos_dico[genus_page_fk] = genus_page_dico[genus_page_pk]
 
-            (french_infos_fields,french_infos_values) = analyze_dico(french_infos_dico,french_infos_fields,french_infos_values)
+            #(_,french_infos_values) = analyze_dico(french_infos_dico,french_infos_fields,french_infos_values)
+
+            for key in french_infos_fields:
+                if key not in french_infos_values:
+                        french_infos_values[key] = []
+
+                if key not in french_infos_dico.keys():
+                    french_infos_values[key].append("")
+                else:
+                    french_infos_values[key].append(french_infos_dico[key])
+
             json.dump(french_infos_values, open("text.txt",'w+'))
-            json.dump(french_infos_dico, open("french_infos_dico.txt",'w+'))
+            #json.dump(french_infos_dico, open("french_infos_dico.txt",'w+'))
 
     content += "\n\n" + template_table_sql("species_page",species_page_fields,species_page_values,species_page_pk,"varchar(255)")
     content += "\n\n" + template_table_sql("genus_page",genus_page_fields,genus_page_values,genus_page_pk,"varchar(255)")
-    #content += "\n\n" + template_table_sql("nom_binominal",french_infos_fields,french_infos_values,french_infos_pk,"varchar(255)")
+    content += "\n\n" + template_table_sql("nom_binominal",french_infos_fields,french_infos_values)
 
     return content
 
