@@ -16,7 +16,7 @@ Puis, pour installer les dépendances python, faites:
 ```bash
 python scripts/generateDatabase.py
 ```
-Pour ne pas utiliser la correction de wikipedia (et générer la base de donnée très rapidement), il suffit de changer la constante USE_WIKIPEDIA au début du fichier comme ceci:
+Pour ne pas enrichir les données avec wikipedia (et générer la base de donnée très rapidement), il suffit de changer la constante USE_WIKIPEDIA au début du fichier comme ceci:
 
 ```python
 USE_WIKIPEDIA = False
