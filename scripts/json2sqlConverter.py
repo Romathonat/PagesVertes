@@ -322,13 +322,17 @@ def convert_nom_binominal_json_to_sql():
             species_page_dico = dico[species_page_key]
             genus_page_dico = dico[genus_page_key]
 
+            is_specie_page_already_in_table = False
+            is_genus_page_already_in_table = False
+
+            # we check that primary key are unique
             if len(species_page_values)!=0 and len(species_page_dico)!=0:
                 if species_page_dico[species_page_pk] in species_page_values[species_page_pk]:
-                    continue
+                    is_specie_page_already_in_table = True
 
             if len(genus_page_values) != 0 and len(genus_page_dico) != 0:
                 if genus_page_dico[genus_page_pk] in genus_page_values[genus_page_pk]:
-                    continue
+                    is_genus_page_already_in_table = True
 
             #we group all the other infos in one dictionary, we use for base the franch_infos_dico
             french_infos_dico = dico[french_infos_key]
@@ -347,12 +351,14 @@ def convert_nom_binominal_json_to_sql():
             # now we go through dico values
 
             if len(species_page_dico) != 0:
-                (species_page_fields,species_page_values) = analyze_dico(species_page_dico,species_page_fields,species_page_values)
+                if is_specie_page_already_in_table == False:
+                    (species_page_fields,species_page_values) = analyze_dico(species_page_dico,species_page_fields,species_page_values)
                 french_infos_dico[species_page_fk] = species_page_dico[species_page_pk]
                 
 
-            if len(genus_page_dico) != 0: 
-                (genus_page_fields,genus_page_values) = analyze_dico(genus_page_dico,genus_page_fields,genus_page_values)
+            if len(genus_page_dico) != 0:
+                if is_genus_page_already_in_table == False: 
+                    (genus_page_fields,genus_page_values) = analyze_dico(genus_page_dico,genus_page_fields,genus_page_values)
                 french_infos_dico[genus_page_fk] = genus_page_dico[genus_page_pk]
 
             (french_infos_fields,french_infos_values) = analyze_dico(french_infos_dico,french_infos_fields,french_infos_values)
