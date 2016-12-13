@@ -108,26 +108,8 @@ def template_insert_values_table_sql(table_name,table_fields,table_values):
 
     table += ") VALUES \n"
 
-    # is_first_values = True #variable use in order to know if we add a `,` after the values tuple
-    # for values in table_values:
-    #     if is_first_values == False:
-    #         table += " , "
-    #     table += "("
 
-    #     is_first_value = True #variable use in order to know if we add a `,` after the value
-    #     for value in values:
-    #         if is_first_value == False:
-    #             table += " , "
-
-    #         table += "'"+str(value).replace("'","\\'")+"'"
-            
-    #         if value == "":
-    #             table += ""
-    #         is_first_value = False
-
-    #     table += ")"
-    #     is_first_values = False
-
+    # now we go through values to create the tuples to insert
     table_values_list = list(table_values.values())
     i = 0
     is_first_values = True #variable use in order to know if we add a `,` after the values tuple
@@ -219,21 +201,7 @@ def convert_json_to_SQL(file_json,primary_key_field_name=None,primary_key_field_
     if data != None:
         
         for dico in data:
-            (fields,values) = analyze_dico(dico,fields,values)
-    #         for key in dico.keys():
-    #             if key not in fields:
-    #                 if isinstance(dico[key],int):
-    #                     fields[key] = ("int(11)",True)
-    #                 elif isinstance(dico[key],float):
-    #                     fields[key] = ("double",True)
-    #                 else:
-    #                     fields[key] = ("varchar(255)",True)
-
-    #                 values[key] = []
-
-    #             values[key].append(dico[key])
-
-    
+            (fields,values) = analyze_dico(dico,fields,values)    
 
 
     file_name = str(os.path.splitext(ntpath.basename(file_json))[0])
@@ -315,7 +283,6 @@ def convert_nom_binominal_json_to_sql():
     genus_page_values = {}
 
     french_infos_fields = {"Nom binominal":("varchar(255)",True),"Division":("varchar(255)",True),"Règne":("varchar(255)",True),"Classe":("varchar(255)",True),"Famille":("varchar(255)",True),"Sous-famille":("varchar(255)",True),"Clade":("varchar(255)",True),"Sous-règne":("varchar(255)",True),"Ordre":("varchar(255)",True),"Sous-classe":("varchar(255)",True),genus_key:("varchar(255)",True),specie_key:("varchar(255)",True),foliage_key:("varchar(255)",True),vernacular_name_key:("varchar(255)",True)}
-
     french_infos_values = {}
 
     if data != None:
@@ -404,11 +371,5 @@ def convert_green_pages_jsons_to_sql():
     file_writer(DIRECTORY_RESULT_PATH,result_filename,content)
 
 
-def test():
-    path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"../webApp/json/")
-    for file_json in glob.glob(os.path.join(path, '*.json')):
-        open_json(file_json)
-
 
 convert_green_pages_jsons_to_sql()
-#test()
