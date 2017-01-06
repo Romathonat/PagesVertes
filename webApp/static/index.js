@@ -23,6 +23,9 @@ function searchID() {
     searchMap.clearMap();
     $('#binominalDropdown').dropdown('restore defaults');
     let idTree = document.getElementById("idTree").value.trim().toLowerCase();
+    if (idTree.substring(0, 2) != "ar") {
+        idTree = "ar" + idTree;
+    }
     var tree = completeInfo(idTree);
     if (typeof tree === 'undefined'){
         updateTreeDetails(undefined);
