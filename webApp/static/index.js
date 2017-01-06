@@ -58,6 +58,7 @@ function updateTreeList(trees) {
 
 
 function searchBinominalName(binName){
+    updateTreeDetails(undefined);
     searchMap.clearMap();
     let temp = [];
     jQuery.each(arbre, function(i, val) {
