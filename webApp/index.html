@@ -85,9 +85,9 @@
         <dt>Genre</dt><dd class="genderName">{{ tree.nomBinominal.genre }}</dd>
         <dt>Espèce</dt><dd class="speciesName">{{ tree.nomBinominal.espece }}</dd>
         <dt>Feuillage</dt><dd>{{ tree.nomBinominal.feuillage.typeArbre }}</dd>
-        <dt>Hauteur</dt><dd>{{ tree.hauteur }}</dd>
-        <dt>Diamètre tronc</dt><dd>{{ tree.diametreTronc }}</dd>
-        <dt>Diamètre courronne</dt><dd>{{ tree.diametreCouronne }}</dd>
+        <dt>Hauteur</dt><dd>{{ tree.hauteur }} m</dd>
+        <dt>Diamètre tronc</dt><dd>{{ tree.diametreTronc }} cm</dd>
+        <dt>Diamètre couronne</dt><dd>{{ tree.diametreCouronne }} cm</dd>
         <dt>Latitude</dt><dd>{{ tree.latitude }}</dd>
         <dt>Longitude</dt><dd>{{ tree.longitude }}</dd>
         <dt>Infos</dt><dd>{{ info_french }}</dd>
@@ -102,11 +102,15 @@
         <div class="unselectedItem">
             <img class="floated left top aligned image" src="static/images/leaf-list.png">
             <div class="content">
-                <dl>
+                <dl class="treelifirstdl">
                     <dt>Identifiant</dt><dd><h4> {{ id }} </h4></dd>
-                    <dt>Genre</dt><dd class="genderName">{{ nomBinominal.genre }}</dd>
-                    <dt>Espèce</dt><dd class="speciesName">{{ nomBinominal.espece }}</dd>
-                    <dt>Nom français</dt><dd>{{ nomBinominal.nom_vernaculaire }}</dd>
+                    <dt>Latitude</dt><dd>{{ latitude }}</dd>
+                    <dt>Longitude</dt><dd>{{ longitude }}</dd>
+                </dl>
+                <dl class="treeliseconddl">
+                    <dt>Hauteur</dt><dd>{{ hauteur }} m</dd>
+                    <dt>Diamètre tronc</dt><dd>{{ diametreTronc }} cm</dd>
+                    <dt>Diamètre couronne</dt><dd>{{ diametreCouronne }} cm</dd>
                 </dl>
             </div>
         </div>
