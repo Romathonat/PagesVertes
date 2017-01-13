@@ -90,10 +90,37 @@
         <dt>Diamètre couronne</dt><dd>{{ tree.diametreCouronne }} cm</dd>
         <dt>Latitude</dt><dd>{{ tree.latitude }}</dd>
         <dt>Longitude</dt><dd>{{ tree.longitude }}</dd>
-        <dt>Infos</dt><dd>{{ info_french }}</dd>
-        <dt>Infos genre</dt><dd>{{ genus_page }}</dd>
-        <dt>Infos espece</dt><dd>{{ species_page }}</dd>
+        <dt>Details de l'arbre</dt>
+        <dd>
+            <dl>
+                <dt>Nom binominal</dt><dd>{{ nom_binominal }}</dd>
+                <dt>Division</dt><dd>{{ info_french.Division }}</dd>
+                <dt>Genre</dt><dd>{{ info_french.Genre }}</dd>
+                <dt>Classe</dt><dd>{{ info_french.Classe }}</dd>
+                <dt>Règne</dt><dd>{{ info_french.Règne}}</dd>
+                <dt>Sous-règne</dt><dd>{{ info_french.Sous-règne}}</dd>
+                <dt>Famille</dt><dd>{{ info_french.Famille}}</dd>
+                <dt>Ordre</dt><dd>{{ info_french.Ordre}}</dd>
+            </dl>
+        </dd>
+        <dt>Details du genre</dt>
+        <dd>
+            <dl>
+                <dt>Genre</dt><dd>{{ genus_page.page_title }}</dd>
+                <dt>Description</dt><dd>{{ genus_page.description }}</dd>
+                <dt>Lien</dt><dd><a href="{{ genus_page.url }}">{{ genus_page.url }}</a></dd>
+            </dl>
+        </dd>
+        <dt>Details de l'espèce</dt>
+        <dd>
+            <dl>
+                <dt>Espèce</dt><dd>{{ species_page.page_title }}</dd>
+                <dt>Description</dt><dd>{{ species_page.description }}</dd>
+                <dt>Lien</dt><dd><a href="{{ species_page.url }}">{{ species_page.url }}</a></dd>
+            </dl>
+        </dd>
     </dl>
+
 </template>
 
 <template id="treeListTemplate">
