@@ -4,9 +4,12 @@ import os
 from wikipediaQueryEngine import WikipediaQueryEngine
 from utils import hashableDict, hashableDictArbre
 
+"""
+This script generate the json database.
+"""
 PATH_JSON = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'webApp', 'json')
 PATH_INCOMPLETE_DATA = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'webApp', 'json','incomplete_data')
-USE_WIKIPEDIA = True
+USE_WIKIPEDIA = False
 
 def load_gps():
     """
@@ -24,7 +27,6 @@ def load_gps():
 sanitized_data, incomplete_data = sanitize()
 
 # those are the tables of our model
-# python dict are hashable, good to gain perfs
 arbre = set()
 nomBinominal = set()
 feuillage = set()
