@@ -1,3 +1,4 @@
+# coding: utf-8 
 from bs4 import BeautifulSoup as bs
 from urllib.request import urlopen
 import wikipedia
@@ -34,7 +35,7 @@ class WikipediaQueryEngine:
              species += word.lower() + ' '
         return species.strip()
 
-    def enrich_data(self, name_french, genus, species):        
+    def enrich_data(self, name_french, genus, species):
         """
         Returns a dictionary in the form of:
         {
@@ -54,9 +55,9 @@ class WikipediaQueryEngine:
                              }
             "info_french" : {
                                 ...
-                            }   
+                            }
         }
-        """    
+        """
 
         if (name_french, genus, species) in WikipediaQueryEngine.results_by_tuple:
             return WikipediaQueryEngine.results_by_tuple[(name_french, genus, species)]
@@ -81,7 +82,7 @@ class WikipediaQueryEngine:
             queries_for_genus = set()
             queries_for_genus.add(genus)
             queries_for_genus.add(name.split()[0])
-            queries_for_genus.add(name)    
+            queries_for_genus.add(name)
 
             for query_for_genus in queries_for_genus:
                 genus_page = self.find_genus_page_for(query_for_genus)
@@ -95,8 +96,8 @@ class WikipediaQueryEngine:
             if not species_page :
                 # plant name did not return a species page, use binominal name build from genus and species names
                 species_page = self.find_species_page_for(self.build_binominal_name_for_query(genus, species))
-            if species_page: 
-                # we finaly found a species page 
+            if species_page:
+                # we finaly found a species page
                 result["species_page"] = species_page.copy()
                 result["species"] = self.build_species_name_from_binominal_name(species_page["info_french"]["Nom binominal"], species_page["info_french"]["Genre"])
 
@@ -118,7 +119,7 @@ class WikipediaQueryEngine:
         max_page_info = {}
         if "genus_page" in result and result["genus_page"]:
             max_page_info = result["genus_page"]["info_french"].copy()
-            del result["genus_page"]["info_french"] 
+            del result["genus_page"]["info_french"]
 
         species_page_info = {}
         if "species_page" in result and result["species_page"]:
@@ -163,7 +164,7 @@ class WikipediaQueryEngine:
             # scrape given url
             if url in WikipediaQueryEngine.scraped_pages_by_url:
                 page_results = WikipediaQueryEngine.scraped_pages_by_url[url]
-            else:                            
+            else:
                 page_results = self.scrape_page(url)
                 WikipediaQueryEngine.scraped_pages_by_url[url] = page_results
 

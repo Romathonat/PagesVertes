@@ -1,3 +1,4 @@
+# coding: utf-8 
 import xlrd
 from utils import normalize
 from checkDF import checkDF

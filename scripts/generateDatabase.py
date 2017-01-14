@@ -1,3 +1,4 @@
+# coding: utf-8 
 from sanitize import sanitize
 import json
 import os
