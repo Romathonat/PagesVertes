@@ -74,11 +74,15 @@ pre {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
     display: inline-block;
 }
 
+.content{
+    margin-right: 0px;
+}
+
 .resultListItem .treeliseconddl{
     display: inline-block;
 }
 
 .resultListItem .treelifirstdl{
-    margin-right: 200px;
+    margin-right: 150px;
     display: inline-block;
 }

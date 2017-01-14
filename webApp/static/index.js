@@ -3,7 +3,7 @@ var binominaltemplate;
 var treeDetailsTemplate;
 var searchMap;
 
-//This function join the json to reconstuct one tree data
+//This function joins the json to reconstuct one tree data
 function completeInfo(idTree){
     if (typeof arbre[idTree] === "undefined"){
         return undefined;

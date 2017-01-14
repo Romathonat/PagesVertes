@@ -81,29 +81,29 @@
 
 <template id="treeDetailsTemplate">
     <dl>
-        <dt>Identifiant</dt><dd><h4> {{ tree.id }} </h4></dd>
-        <dt>Genre</dt><dd class="genderName">{{ tree.nomBinominal.genre }}</dd>
-        <dt>Espèce</dt><dd class="speciesName">{{ tree.nomBinominal.espece }}</dd>
-        <dt>Feuillage</dt><dd>{{ tree.nomBinominal.feuillage.typeArbre }}</dd>
-        <dt>Hauteur</dt><dd>{{ tree.hauteur }} m</dd>
-        <dt>Diamètre tronc</dt><dd>{{ tree.diametreTronc }} cm</dd>
-        <dt>Diamètre couronne</dt><dd>{{ tree.diametreCouronne }} cm</dd>
-        <dt>Latitude</dt><dd>{{ tree.latitude }}</dd>
-        <dt>Longitude</dt><dd>{{ tree.longitude }}</dd>
-        <dt>Details de l'arbre</dt>
+        <dt><strong>Identifiant</strong></dt><dd><h4> {{ tree.id }} </h4></dd>
+        <dt><strong>Genre</strong></dt><dd class="genderName">{{ tree.nomBinominal.genre }}</dd>
+        <dt><strong>Espèce</strong></dt><dd class="speciesName">{{ tree.nomBinominal.espece }}</dd>
+        <dt><strong>Feuillage</strong></dt><dd>{{ tree.nomBinominal.feuillage.typeArbre }}</dd>
+        <dt><strong>Hauteur</strong></dt><dd>{{ tree.hauteur }} m</dd>
+        <dt><strong>Diamètre tronc</strong></dt><dd>{{ tree.diametreTronc }} cm</dd>
+        <dt><strong>Diamètre couronne</strong></dt><dd>{{ tree.diametreCouronne }} cm</dd>
+        <dt><strong>Latitude</strong></dt><dd>{{ tree.latitude }}</dd>
+        <dt><strong>Longitude</strong></dt><dd>{{ tree.longitude }}</dd>
+        <dt><strong>Details de l'arbre</strong></dt>
         <dd>
             <dl>
-                <dt>Nom binominal</dt><dd>{{ nom_binominal }}</dd>
-                <dt>Division</dt><dd>{{ info_french.Division }}</dd>
-                <dt>Genre</dt><dd>{{ info_french.Genre }}</dd>
-                <dt>Classe</dt><dd>{{ info_french.Classe }}</dd>
-                <dt>Règne</dt><dd>{{ info_french.Règne}}</dd>
-                <dt>Sous-règne</dt><dd>{{ info_french.Sous-règne}}</dd>
-                <dt>Famille</dt><dd>{{ info_french.Famille}}</dd>
-                <dt>Ordre</dt><dd>{{ info_french.Ordre}}</dd>
+                <dt><em>Nom binominal</em></dt><dd>{{ nom_binominal }}</dd>
+                <dt><em>Division</em></dt><dd>{{ info_french.Division }}</dd>
+                <dt><em>Genre</em></dt><dd>{{ info_french.Genre }}</dd>
+                <dt><em>Classe</em></dt><dd>{{ info_french.Classe }}</dd>
+                <dt><em>Règne</em></dt><dd>{{ info_french.Règne}}</dd>
+                <dt><em>Sous-règne</em></dt><dd>{{ info_french.Sous-règne}}</dd>
+                <dt><em>Famille</em></dt><dd>{{ info_french.Famille}}</dd>
+                <dt><em>Ordre</em></dt><dd>{{ info_french.Ordre}}</dd>
             </dl>
         </dd>
-        <dt>Details du genre</dt>
+        <dt><strong>Details du genre</strong></dt>
         <dd>
             <dl>
                 <dt>Genre</dt><dd>{{ genus_page.page_title }}</dd>
@@ -111,7 +111,7 @@
                 <dt>Lien</dt><dd><a href="{{ genus_page.url }}">{{ genus_page.url }}</a></dd>
             </dl>
         </dd>
-        <dt>Details de l'espèce</dt>
+        <dt><strong>Details de l'espèce</strong></dt>
         <dd>
             <dl>
                 <dt>Espèce</dt><dd>{{ species_page.page_title }}</dd>
