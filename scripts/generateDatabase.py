@@ -1,4 +1,4 @@
-# coding: utf-8 
+# coding: utf-8
 from sanitize import sanitize
 import json
 import os
@@ -10,7 +10,7 @@ This script generate the json database.
 """
 PATH_JSON = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'webApp', 'json')
 PATH_INCOMPLETE_DATA = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'webApp', 'json','incomplete_data')
-USE_WIKIPEDIA = False
+USE_WIKIPEDIA = True
 
 def load_gps():
     """
@@ -51,7 +51,6 @@ for line in sanitized_data:
 
     # we do not add this data if we don't have the gps informations
     if gps_cordinate:
-        # we correct datas with wikipedia, if requested
         if USE_WIKIPEDIA:
             print('{} {} {}'.format(line[2], line[3], line[4]))
             r = w.enrich_data(line[2], line[3], line[4])

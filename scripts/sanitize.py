@@ -1,4 +1,4 @@
-# coding: utf-8 
+# coding: utf-8
 import xlrd
 from utils import normalize
 from checkDF import checkDF
@@ -16,6 +16,7 @@ def sanitize():
     new_data = []
     incomplete_data = []
 
+    count_corrections = 0
 
     #this dict contains the right espece for each type en francais
     correction_espece_type = {
@@ -92,16 +93,22 @@ def sanitize():
         # we could have a mistake here, so we need to check the espece for each type we have
         for type_francais, espece in correction_espece_type.items():
             if new_line[2] == type_francais:
-                new_line[4] = espece
+                if new_line[4] != espece:
+                    count_corrections +=1
+                    new_line[4] = espece
 
         for type_francais, espece_genre in correction_genre_espece.items():
             if new_line[2] == type_francais:
-                new_line[3] = espece_genre[0]
-                new_line[4] = espece_genre[1]
+                if new_line[3] != espece_genre[0] or new_line[4] != espece_genre[1]:
+                    count_corrections +=1
+                    new_line[3] = espece_genre[0]
+                    new_line[4] = espece_genre[1]
 
         for espece_genre, type_arbre in correction_type_arbre.items():
             if (new_line[3], new_line[4]) == espece_genre:
-                new_line[5] = type_arbre
+                if new_line[5] != type_arbre:
+                    count_corrections +=1
+                    new_line[5] = type_arbre
 
         # if we don't have the type, the genus and the specie, we add this line to errors
         if new_line[2] != '' and new_line[3] != '' and new_line[4] != '':
@@ -109,8 +116,8 @@ def sanitize():
         else:
             incomplete_data.append(new_line)
 
-
-    #print(new_data)
+    #print("Nombre de corrections (sans wikipedia) {}".format(count_corrections))
+    
     errors = checkDF(new_data)
 
     for line in errors:
