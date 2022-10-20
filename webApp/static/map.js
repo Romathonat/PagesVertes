@@ -19,11 +19,9 @@
 
         this.markersIndex = {}; //Index that allows finding a marker with tree id
 
-        L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-            maxZoom: this.maxZoom,
-            id: 'romathonat.23e4b6a0',
-            accessToken: 'pk.eyJ1Ijoicm9tYXRob25hdCIsImEiOiJjaXZmM2J4M2cwMDM2Mnpxa253cHVkdHA0In0.FU0Ju6sGpWmlm74TEphPbA'
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png?', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: this.maxZoom
         }).addTo(this.searchMap);
 
         this.greenIcon = L.icon({
