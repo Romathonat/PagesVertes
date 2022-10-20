@@ -1,15 +1,17 @@
 # Pages Vertes
 
 Ce projet a pour but le nettoyage de données sur les arbres de Lyon, et la production d'une application permettant l'exploration et la recherche de ces arbres.
+![image](https://user-images.githubusercontent.com/15065884/196900201-d4ec30e3-1e7a-4336-9de2-69c4a10d948d.png)
 
 ## Requis
-Python (>=3)
+Python (==3.5)
 
 ## Installer les dépendances Python
 Pour faire fonctionner le projet, il est nécessaire d'installer quelques dépendances python. Pour cela, il est nécessaire d'avoir pip. Si celui-ci n'est pas présent sur le système, faites:
 ```bash
 ./scripts/installPip.sh
 ```
+
 
 Puis, pour installer les dépendances python, faites:
 ```bash
